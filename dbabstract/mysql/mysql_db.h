@@ -1,7 +1,7 @@
 /*
  * A database abstraction layer for C++ and ACE framework
  *
- * (C) 2006-2007 Thralling Penguin LLC. All rights reserved.
+ * (C) 2006-2014 Thralling Penguin LLC. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
