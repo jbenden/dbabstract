@@ -1,6 +1,6 @@
-A database abstraction layer for C++ and ACE framework
+A database abstraction layer for C++ and POCO framework
  
-(C) 2006-2007 Thralling Penguin LLC. All rights reserved.
+(C) 2006-2014 Thralling Penguin LLC. All rights reserved.
 
 --------------------------------------------------------------
 
