@@ -1,6 +1,6 @@
-/*                                                              
+/*
  * A database abstraction layer for C++ and ACE framework
- * 
+ *
  * (C) 2006-2007 Thralling Penguin LLC. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -15,12 +15,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA                                                                
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #include <fstream>
 #include <iomanip>
-#include "ace/os_include/os_stddef.h"
-#include "ace/OS_Memory.h"
+
 #include "db.h"
 #include "mysql/mysql.h"
 
@@ -59,13 +58,6 @@ namespace DB
         // created/deleted using the memory allocator associated with the
         // DLL/SO.
         void *operator new (size_t bytes);
-        #if defined (ACE_HAS_NEW_NOTHROW)
-        // Overloaded new operator, nothrow_t variant.
-        void *operator new (size_t bytes, const ACE_nothrow_t&);
-        #if !defined (ACE_LACKS_PLACEMENT_OPERATOR_DELETE)
-        void operator delete (void *p, const ACE_nothrow_t&) throw ();
-        #endif /* ACE_LACKS_PLACEMENT_OPERATOR_DELETE */
-        #endif
         void operator delete (void *ptr);
 
     private:
@@ -106,13 +98,6 @@ namespace DB
         // created/deleted using the memory allocator associated with the
         // DLL/SO.
         void *operator new (size_t bytes);
-        #if defined (ACE_HAS_NEW_NOTHROW)
-        // Overloaded new operator, nothrow_t variant.
-        void *operator new (size_t bytes, const ACE_nothrow_t&);
-        #if !defined (ACE_LACKS_PLACEMENT_OPERATOR_DELETE)
-        void operator delete (void *p, const ACE_nothrow_t&) throw ();
-        #endif /* ACE_LACKS_PLACEMENT_OPERATOR_DELETE */
-        #endif
         void operator delete (void *ptr);
 
     private:

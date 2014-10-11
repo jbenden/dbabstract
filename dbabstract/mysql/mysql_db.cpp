@@ -1,6 +1,6 @@
-/*                                                              
+/*
  * A database abstraction layer for C++ and ACE framework
- * 
+ *
  * (C) 2006-2007 Thralling Penguin LLC. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -15,16 +15,15 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA                                                                 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#define ACE_BUILD_SVC_DLL
+
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+
 #include "mysql_db.h"
-#include "ace/Log_Msg.h"
-#include "ace/svc_export.h"
-#include "ace/OS_Memory.h"
-#include "ace/OS.h"
+
 #include "mysql/mysql.h"
 
 namespace DB
@@ -33,11 +32,11 @@ namespace DB
 MySQL_ResultSet::~MySQL_ResultSet()
 {
     if (res_) {
-        ACE_DEBUG((LM_ERROR,"Warning ResultSet wasn't closed or deleted.\n"));
+        std::cerr << "Warning ResultSet wasn't closed or deleted." << std::endl;
     }
 }
 
-bool 
+bool
 MySQL_ResultSet::close(void)
 {
     if (!res_) return (false);
@@ -54,14 +53,14 @@ MySQL_ResultSet::close(void)
     return (true);
 }
 
-bool 
+bool
 MySQL_ResultSet::next(void)
 {
     row_ = mysql_fetch_row(res_);
     return ((row_ != NULL ? true : false));
 }
 
-unsigned long 
+unsigned long
 MySQL_ResultSet::recordCount(void) const
 {
     /* NOTE: This call ALWAYS fails because mysql_use_result
@@ -74,7 +73,7 @@ MySQL_ResultSet::recordCount(void) const
     return ((unsigned long) mysql_num_rows(res_));
 }
 
-unsigned int 
+unsigned int
 MySQL_ResultSet::findColumn(const char *fld) const
 {
     unsigned int num_fields;
@@ -84,7 +83,7 @@ MySQL_ResultSet::findColumn(const char *fld) const
     num_fields = mysql_num_fields(res_);
     for (i=0; i<num_fields; i++) {
         field = mysql_fetch_field_direct(res_, i);
-        if (ACE_OS::strcmp(field->name,fld) == 0) {
+        if (::strcmp(field->name, fld) == 0) {
             return (i);
         }
     }
@@ -97,13 +96,13 @@ MySQL_ResultSet::getString(const int idx) const
     return (row_[idx]);
 }
 
-const int 
+const int
 MySQL_ResultSet::getInteger(const int idx) const
 {
-    return ((const int) ACE_OS::atoi(row_[idx]));
+    return ((const int) ::atoi(row_[idx]));
 }
 
-const bool 
+const bool
 MySQL_ResultSet::getBool(const int idx) const
 {
     if (row_[idx] && row_[idx][0] == '1') {
@@ -112,17 +111,16 @@ MySQL_ResultSet::getBool(const int idx) const
     return (false);
 }
 
-const time_t 
+const time_t
 MySQL_ResultSet::getUnixTime(const int idx) const
 {
     struct tm tmp;
-    // ACE_DEBUG((LM_DEBUG, ACE_TEXT("Read UnixTime: %s\n"), row_[idx]));
 
     if (row_[idx]) {
         // switch on the type of field
         // Basically, there are two types of returns I've seen
-        // 1. has a hypen and is fully parseable
-        // 2. has no hypen and is an older timestamp field
+        // 1. has a hyphen and is fully parseable
+        // 2. has no hyphen and is an older timestamp field
         // The others are raw DATE or TIME
         int Ypos = 0;
         int Mpos = 4;
@@ -143,47 +141,43 @@ MySQL_ResultSet::getUnixTime(const int idx) const
         tmp.tm_year = (((row_[idx][Ypos] - '0') * 1000) + ((row_[idx][Ypos+1] - '0') * 100) + ((row_[idx][Ypos+2] - '0') * 10) + (row_[idx][Ypos+3] - '0')) - 1900;
         tmp.tm_mon = (((row_[idx][Mpos] - '0') * 10) + (row_[idx][Mpos+1] - '0')) - 1; /* 0 - 11 */
         tmp.tm_mday = (((row_[idx][Dpos] - '0') * 10) + (row_[idx][Dpos+1] - '0')); /* 1 - 31 */
-        tmp.tm_hour = (((row_[idx][hpos] - '0') * 10) + (row_[idx][hpos+1] - '0')) - 1; /* 0 - 23 */
+        tmp.tm_hour = (((row_[idx][hpos] - '0') * 10) + (row_[idx][hpos+1] - '0')); /* 0 - 23 */
         tmp.tm_min = (((row_[idx][mpos] - '0') * 10) + (row_[idx][mpos+1] - '0')); /* 0-59 */
         tmp.tm_sec = (((row_[idx][spos] - '0') * 10) + (row_[idx][spos+1] - '0')); /* 0-59 */
 
         /*
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("y=%d m=%d d=%d h=%d m=%d s=%d\n"), 
-                   tmp.tm_year,
-                   tmp.tm_mon,
-                   tmp.tm_mday,
-                   tmp.tm_hour,
-                   tmp.tm_min,
-                   tmp.tm_sec));
+          std::cerr << "y=" << tmp.tm_year << " m=" << tmp.tm_mon;
+          std::cerr << " d=" << tmp.tm_mday << " h=" << tmp.tm_hour;
+          std::cerr << " m=" << tmp.tm_min << " s=" << tmp.tm_sec << std::endl;
         */
         return (mktime(&tmp));
     }
     return (0);
 }
 
-const double 
+const double
 MySQL_ResultSet::getDouble(const int idx) const
 {
     char *pEnd;
-    return ((row_[idx] ? ACE_OS::strtod(row_[idx], &pEnd) : 0));
+    return ((row_[idx] ? strtod(row_[idx], &pEnd) : 0));
 }
 
-const float 
+const float
 MySQL_ResultSet::getFloat(const int idx) const
 {
     return ((row_[idx] ? atof(row_[idx]) : 0));
 }
 
-const long 
+const long
 MySQL_ResultSet::getLong(const int idx) const
 {
     return ((row_[idx] ? atol(row_[idx]) : 0L));
 }
 
-const short 
+const short
 MySQL_ResultSet::getShort(const int idx) const
 {
-    return ((short) (row_[idx] ? ACE_OS::atoi(row_[idx]) : 0));
+    return ((short) (row_[idx] ? atoi(row_[idx]) : 0));
 }
 
 void *
@@ -191,20 +185,7 @@ MySQL_ResultSet::operator new (size_t bytes)
 {
   return (::new char[bytes]);
 }
-#if defined (ACE_HAS_NEW_NOTHROW)
-void *
-MySQL_ResultSet::operator new (size_t bytes, const ACE_nothrow_t&)
-{
-  return (::new (ACE_nothrow) char[bytes]);
-}
-#if !defined (ACE_LACKS_PLACEMENT_OPERATOR_DELETE)
-void
-MySQL_ResultSet::operator delete (void *p, const ACE_nothrow_t&) throw ()
-{
-  delete [] static_cast <char *> (p);
-}
-#endif /* ACE_LACKS_PLACEMENT_OPERATOR_DELETE */
-#endif
+
 void
 MySQL_ResultSet::operator delete (void *ptr)
 {
@@ -218,13 +199,13 @@ MySQL_Connection::open(const char *database, const char *host, const int port, c
         return (false);
     }
     if (mysql_real_connect(
-            mysql_, 
-            host, 
-            user, 
-            pass, 
-            NULL, 
-            (unsigned)port, 
-            NULL, 
+            mysql_,
+            host,
+            user,
+            pass,
+            NULL,
+            (unsigned)port,
+            NULL,
             0
             ) == NULL) {
         return (false);
@@ -235,7 +216,7 @@ MySQL_Connection::open(const char *database, const char *host, const int port, c
     return (true);
 }
 
-bool 
+bool
 MySQL_Connection::close(void)
 {
     if (!mysql_) return (false);
@@ -251,7 +232,7 @@ MySQL_Connection::isConnected(void)
     return ((mysql_ping(mysql_) == 0 ? true : false));
 }
 
-bool 
+bool
 MySQL_Connection::execute(const char *sql)
 {
     if (!mysql_) return (false);
@@ -261,7 +242,7 @@ MySQL_Connection::execute(const char *sql)
     return (false);
 }
 
-DB::ResultSet * 
+DB::ResultSet *
 MySQL_Connection::executeQuery(const char *sql)
 {
     if (!mysql_) return (false);
@@ -274,7 +255,7 @@ MySQL_Connection::executeQuery(const char *sql)
         return (0);
     }
     DB::ResultSet *c = 0;
-    ACE_NEW_RETURN (c, DB::MySQL_ResultSet(res), 0);
+    c = new DB::MySQL_ResultSet(res);
     return (c);
 }
 
@@ -296,20 +277,20 @@ MySQL_Connection::unixtimeToSql(const time_t val)
     char *buf = new char[22];
     struct tm *tmp = new struct tm;
     buf[0] = '\'';
-    ACE_OS::strftime(buf+1, 20, "%Y-%m-%d %H:%M:%S", ACE_OS::localtime_r(&val, tmp));
+    strftime(buf+1, 20, "%Y-%m-%d %H:%M:%S", localtime_r(&val, tmp));
     buf[20] = '\'';
     buf[21] = 0;
     delete tmp;
     return (buf);
 }
 
-const unsigned long 
+const unsigned long
 MySQL_Connection::insertId(void)
 {
     return ((const unsigned long) mysql_insert_id(mysql_));
 }
 
-bool 
+bool
 MySQL_Connection::beginTrans(void)
 {
     if (!mysql_) return (false);
@@ -342,7 +323,7 @@ MySQL_Connection::rollbackTrans(void)
     return (false);
 }
 
-bool 
+bool
 MySQL_Connection::setTransactionMode(const enum TRANS_MODE mode)
 {
     const char *sql = "";
@@ -366,7 +347,7 @@ MySQL_Connection::setTransactionMode(const enum TRANS_MODE mode)
     return (execute(sql));
 }
 
-unsigned int 
+unsigned int
 MySQL_Connection::errorno(void) const
 {
     return (mysql_errno(mysql_));
@@ -382,7 +363,7 @@ const char *
 MySQL_Connection::version(void) const
 {
     static char ret[256];
-    ACE_OS::snprintf(ret, 256, "MySQL Driver v0.1 using MySQL client library v%s", mysql_get_client_info());
+    snprintf(ret, 256, "MySQL Driver v0.1 using MySQL client library v%s", mysql_get_client_info());
     return ((const char *) ret);
 }
 
@@ -391,20 +372,7 @@ MySQL_Connection::operator new (size_t bytes)
 {
   return (::new char[bytes]);
 }
-#if defined (ACE_HAS_NEW_NOTHROW)
-void *
-MySQL_Connection::operator new (size_t bytes, const ACE_nothrow_t&)
-{
-  return (::new (ACE_nothrow) char[bytes]);
-}
-#if !defined (ACE_LACKS_PLACEMENT_OPERATOR_DELETE)
-void
-MySQL_Connection::operator delete (void *p, const ACE_nothrow_t&) throw ()
-{
-  delete [] static_cast <char *> (p);
-}
-#endif /* ACE_LACKS_PLACEMENT_OPERATOR_DELETE */
-#endif
+
 void
 MySQL_Connection::operator delete (void *ptr)
 {
@@ -416,13 +384,13 @@ MySQL_Connection::operator delete (void *ptr)
 // take care of exporting the function for Win32 platforms.
 //
 
-extern "C" ACE_Svc_Export Connection *create_connection (void);
+extern "C" Connection *create_connection (void);
 
 DB::Connection *
 create_connection (void)
 {
   DB::MySQL_Connection *c = 0;
-  ACE_NEW_RETURN (c, DB::MySQL_Connection, 0);
+  c = new DB::MySQL_Connection;
   return (c);
 }
 

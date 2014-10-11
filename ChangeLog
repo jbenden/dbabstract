@@ -1,0 +1,4 @@
+* 2014-10-11 11:53 MST Joseph Benden <joe@thrallingpenguin.com>
+- Converted the project to use the POCO libraries, instead of ACE
+  Framework.
+

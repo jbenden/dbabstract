@@ -1,7 +1,7 @@
-/*                                                              
+/*
  * A database abstraction layer for C++ and ACE framework
- * 
- * (C) 2006-2007 Thralling Penguin LLC. All rights reserved.
+ *
+ * (C) 2006-2014 Thralling Penguin LLC. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA                                                                 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #ifndef _DB_H
 #define _DB_H
@@ -23,8 +23,9 @@
 #include <fstream>
 #include <iomanip>
 #include <strstream>
-#include "ace/Log_Msg.h"
-#include "ace/DLL.h"
+#include <iostream>
+
+#include <Poco/SharedLibrary.h>
 
 namespace DB
 {
@@ -32,20 +33,20 @@ namespace DB
      * A ResultSet object is not updatable and has a cursor that
      * moves forward only. Thus, you can iterate through it only
      * once and only from the first row to the last row.
-     * 
+     *
      * The ResultSet interface provides getter methods for
      * retrieving column values from the current row. Values
      * can be retrieved using the index number of the column.
      * Columns are numbered from zero (0).
-     * 
+     *
      * For the getter methods, a given driver attempts to convert
      * the underlying data to the C++ type specified in the getter
      * method and returns a suitable value.
-     * 
+     *
      * A ResultSet object MUST be closed when done, which will
      * automatically handle freeing the memory associated with
      * the object.
-     * 
+     *
      * NOTE: Only getString will return NULL if the database had
      *       a NULL value stored, the rest will return ZERO!
      */
@@ -76,7 +77,7 @@ namespace DB
      * Connection object returned from the factory is deleted, the
      * class handles closing the database connection, although the
      * user may do so if desired.
-     * 
+     *
      * The classes are partially thread-safe in that a Connection
      * object may be used in a single thread, but many Connection
      * objects may be created in different threads.  This is due to
@@ -87,32 +88,33 @@ namespace DB
     class Connection
     {
     public:
+        Connection(void) : ref(0) {};
         virtual ~Connection(void) {};
 
         /**
-         * Open a connection to a database. 
-         *  
-         * @param database Database name. Sqlite3 uses this for the 
+         * Open a connection to a database.
+         *
+         * @param database Database name. Sqlite3 uses this for the
          *                 filename.
          * @param host Hostname
          * @param port Port
          * @param user Username
          * @param pass Password
-         * 
+         *
          * @return bool True if successful.
          */
         virtual bool open(const char *database, const char *host, const int port, const char *user, const char *pass) = 0;
 
         /**
          * Close the database connection
-         * 
+         *
          * @return bool True if successful.
          */
         virtual bool close(void) = 0;
 
         /**
          * Attempts to tell if we are still connected to the database.
-         * 
+         *
          * @return bool
          */
         virtual bool isConnected(void) = 0;
@@ -121,9 +123,9 @@ namespace DB
          * Executes a query to the database, discarding any result
          * data.  This function is typically used for non-SELECT
          * statements.
-         * 
+         *
          * @param sql
-         * 
+         *
          * @return bool
          */
         virtual bool execute(const char *sql) = 0;
@@ -135,9 +137,9 @@ namespace DB
          * data or an error occurs, then zero is returned.  Therefore be
          * careful to check the returned value, before using it - or a
          * seg. fault is possible!
-         * 
+         *
          * @param sql
-         * 
+         *
          * @return ResultSet*
          */
         virtual ResultSet *executeQuery(const char *sql) = 0;
@@ -146,7 +148,7 @@ namespace DB
          * Returns a database specific escaped string from the input.
          * The string returned must be freed by the caller.  This is
          * used by the Query class.
-         * 
+         *
          * @return char*
          */
         virtual char *escape(const char *) = 0;
@@ -155,9 +157,9 @@ namespace DB
          * Returns a database specific representation of the time_t
          * value. This is used by the Query class. The string returned
          * must be freed by the caller.
-         * 
+         *
          * @param time_t
-         * 
+         *
          * @return const char*
          */
         virtual const char *unixtimeToSql(const time_t) = 0;
@@ -165,7 +167,7 @@ namespace DB
         /**
          * Returns the last SQL INSERT unique identifier if the
          * underlying database supports this feature.
-         * 
+         *
          * @return const unsigned long
          */
         virtual const unsigned long insertId(void) = 0;
@@ -174,21 +176,21 @@ namespace DB
          * Begins a new transaction. If for some reason it fails, false
          * will be returned (for instance, if the underlying driver does
          * not support transactions.)
-         * 
+         *
          * @return bool
          */
         virtual bool beginTrans(void) = 0;
 
         /**
          * Attempts to commit the current transaction
-         * 
+         *
          * @return bool
          */
         virtual bool commitTrans(void) = 0;
 
         /**
          * Attempts to rollback the current transaction
-         * 
+         *
          * @return bool
          */
         virtual bool rollbackTrans(void) = 0;
@@ -201,16 +203,16 @@ namespace DB
         };
         /**
          * Sets the database transaction mode.
-         * 
+         *
          * @param mode
-         * 
+         *
          * @return bool True or False if it succeeded.
          */
         virtual bool setTransactionMode(const enum TRANS_MODE mode) = 0;
 
         /**
          * Returns the last error code to occur.
-         * 
+         *
          * @return unsigned int
          */
         virtual unsigned int errorno(void) const = 0;
@@ -218,7 +220,7 @@ namespace DB
         /**
          * Returns a textual representation of the last error to occur.
          * The value returned should NOT be freed.
-         * 
+         *
          * @return const char*
          */
         virtual const char *errormsg(void) const = 0;
@@ -227,7 +229,7 @@ namespace DB
          * Returns the DB abstraction module's version number and
          * possibly the version of the underlying database client
          * library used.  The returned value should NOT be freed.
-         * 
+         *
          * @return const char*
          */
         virtual const char *version(void) const = 0;
@@ -238,34 +240,47 @@ namespace DB
          * Factory method for creating a new Connection object
          * for a database connection. This method shields the
          * logic for DLL manipulation from the caller.
-         * 
+         *
          * Warning: The returned Connection pointer may be NULL
          * if an error condition occurred!
-         * 
+         *
          * @param db_dll_name The database type to create
-         * 
+         *
          * @return Connection* Pointer to new Connection object
          */
         static Connection *
         factory(const char *db_dll_name)
         {
-            ACE_DLL dll;
+            Poco::SharedLibrary dll(db_dll_name);
 
-            int ret = dll.open(ACE_TEXT(db_dll_name),
-                        ACE_DEFAULT_SHLIB_MODE,
-                        0);
-            if (ret != 0) {
-                ACE_ERROR_RETURN((LM_ERROR, "%p", "dll.open"), 0);
-            }
             Connection_Creator cc;
-            void *void_ptr = dll.symbol(ACE_TEXT("create_connection"));
-            ptrdiff_t tmp = reinterpret_cast<ptrdiff_t>(void_ptr);
-            cc = reinterpret_cast<Connection_Creator>(tmp);
-            if (cc == NULL) {
-                ACE_ERROR_RETURN((LM_ERROR, "%p", "dll.symbol"), 0);
+            try {
+                void *void_ptr = dll.getSymbol("create_connection");
+                ptrdiff_t tmp = reinterpret_cast<ptrdiff_t>(void_ptr);
+                cc = reinterpret_cast<Connection_Creator>(tmp);
+                if (!cc) {
+                    std::cerr << "Shared Library contains the symbol interface for db-abstract, but returned NULL for some reason." << std::endl;
+                    return (NULL);
+                }
+                return (cc());
+            } catch (Poco::NotFoundException &ex) {
+                std::cerr << "Shared Library does not contain the appropriate interface for db-abstract." << std::endl;
+                return (NULL);
             }
-            return (cc());
         }
+
+        void duplicate() {
+            ref++;
+        }
+
+        void release() {
+            ref--;
+            if (ref == 0) {
+                delete this;
+            }
+        }
+
+        long ref;
     };
 
     /**
@@ -273,11 +288,11 @@ namespace DB
      * allowing abstract usage of escaping and date manipulations in
      * addition to easier SQL query generation by the user.  An
      * example of usage is:
-     * 
+     *
      * Query q(connection);  // Connection is a pointer
-     * 
+     *
      * q << "SELECT fld FROM table WHERE fld=" << qstr("rand'data");
-     * 
+     *
      * std::cout << "SQL: " << q.str() << std::endl;
      */
     class Query
@@ -290,61 +305,61 @@ namespace DB
         Query(Connection &conn) : conn_(conn) {}
         ~Query() { sql_.freeze(false); }
 
-        ACE_INLINE Query& operator<<(const char *sql)
+        inline Query& operator<<(const char *sql)
         {
             sql_ << sql;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const int val)
+        inline Query& operator<<(const int val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const long val)
+        inline Query& operator<<(const long val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const double val)
+        inline Query& operator<<(const double val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const float val)
+        inline Query& operator<<(const float val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const short val)
+        inline Query& operator<<(const short val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const unsigned char *sql)
+        inline Query& operator<<(const unsigned char *sql)
         {
             sql_ << sql;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const unsigned int val)
+        inline Query& operator<<(const unsigned int val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const unsigned long val)
+        inline Query& operator<<(const unsigned long val)
         {
             sql_ << val;
             return (*this);
         }
 
-        ACE_INLINE Query& operator<<(const unsigned short val)
+        inline Query& operator<<(const unsigned short val)
         {
             sql_ << val;
             return (*this);
@@ -352,10 +367,10 @@ namespace DB
 
         /**
          * Get the SQL statement string
-         * 
+         *
          * @return const char*
          */
-        ACE_INLINE const char *str(void)
+        inline const char *str(void)
         {
             sql_ << std::ends;
             return (sql_.str());
@@ -366,7 +381,7 @@ namespace DB
         friend Query &qstr_impl(Query &Out, const char *str);
     };
 
-    ACE_INLINE Query &unixtime_impl(Query &Out, const time_t ut)
+    inline Query &unixtime_impl(Query &Out, const time_t ut)
     {
         const char *buf = Out.conn_.unixtimeToSql(ut);
         Out << buf;
@@ -374,7 +389,7 @@ namespace DB
         return (Out);
     }
 
-    ACE_INLINE Query &qstr_impl(Query &Out, const char *str)
+    inline Query &qstr_impl(Query &Out, const char *str)
     {
         const char *buf = Out.conn_.escape(str);
         Out << buf;
@@ -385,9 +400,9 @@ namespace DB
     /**
      * Stream manipulator to convert a time_t epoct timestamp
      * into a suitable date and time field according to the
-     * underlying database type. 
-     *  
-     * Based on the Effector pattern 
+     * underlying database type.
+     *
+     * Based on the Effector pattern
      */
     class unixtime {
         time_t t;
@@ -401,9 +416,9 @@ namespace DB
 
     /**
      * Stream manipulator to escape a string according to the
-     * underlying database type. 
-     *  
-     * Based on the Effector pattern 
+     * underlying database type.
+     *
+     * Based on the Effector pattern
      */
     class qstr {
         std::string s;

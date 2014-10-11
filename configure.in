@@ -1,7 +1,8 @@
 AC_INIT(dbabstract/db.h)
 AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_TARGET([])
-AM_INIT_AUTOMAKE(dbabstract,0.1)
+AM_INIT_AUTOMAKE(dbabstract,0.2)
+AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
@@ -9,7 +10,7 @@ AM_PROG_LIBTOOL
 
 TEST_CXXFLAGS=""
 
-PKG_CHECK_MODULES(ACE, ACE >= 5.4)
+AC_CHECK_LIB(PocoFoundation, Poco::Logger)
 
 DOC=""
 AC_ARG_ENABLE(doc, [  --enable-doc           Disables the building of documentation],
@@ -73,9 +74,9 @@ fi
 
 AC_SUBST(SQLITE3)
 
-CFLAGS="$CFLAGS -I.. $ACE_CFLAGS" 
-CXXFLAGS="$CXXFLAGS -I.. $ACE_CFLAGS"
-LDFLAGS="$LDFLAGS $ACE_LIBS"
+CFLAGS="$CFLAGS -I.." 
+CXXFLAGS="$CXXFLAGS -I.."
+LDFLAGS="$LDFLAGS $LIBS -lPocoFoundation"
 
 AC_SUBST(TEST_CXXFLAGS)
 

@@ -1,6 +1,6 @@
-/*                                                              
+/*
  * A database abstraction layer for C++ and ACE framework
- * 
+ *
  * (C) 2006-2007 Thralling Penguin LLC. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -15,16 +15,15 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA                                                                 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#define ACE_BUILD_SVC_DLL
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <unistd.h>
+
 #include "sqlite3_db.h"
-#include "ace/Log_Msg.h"
-#include "ace/svc_export.h"
-#include "ace/OS_Memory.h"
-#include "ace/OS.h"
+
 #include "sqlite3.h"
 
 namespace DB
@@ -33,11 +32,11 @@ namespace DB
 Sqlite3_ResultSet::~Sqlite3_ResultSet()
 {
     if (res_) {
-        ACE_DEBUG((LM_ERROR,"Warning ResultSet wasn't closed or deleted.\n"));
+        std::cerr << "Warning ResultSet wasn't closed or deleted." << std::endl;
     }
 }
 
-bool 
+bool
 Sqlite3_ResultSet::close(void)
 {
     int rc;
@@ -56,7 +55,7 @@ Sqlite3_ResultSet::close(void)
     return (true);
 }
 
-bool 
+bool
 Sqlite3_ResultSet::next(void)
 {
     int rc;
@@ -74,13 +73,13 @@ Sqlite3_ResultSet::next(void)
     return (false);
 }
 
-unsigned long 
+unsigned long
 Sqlite3_ResultSet::recordCount(void) const
 {
     return (0); // not supported
 }
 
-unsigned int 
+unsigned int
 Sqlite3_ResultSet::findColumn(const char *fld) const
 {
     unsigned int num_fields;
@@ -90,7 +89,7 @@ Sqlite3_ResultSet::findColumn(const char *fld) const
     num_fields = sqlite3_column_count(res_);
     for (i=0; i<num_fields; i++) {
         field = sqlite3_column_name(res_, i);
-        if (ACE_OS::strcmp(field,fld) == 0) {
+        if (::strcmp(field, fld) == 0) {
             return (i);
         }
     }
@@ -103,13 +102,13 @@ Sqlite3_ResultSet::getString(const int idx) const
     return ((const char *) sqlite3_column_text(res_, idx));
 }
 
-const int 
+const int
 Sqlite3_ResultSet::getInteger(const int idx) const
 {
-    return ((const int) ACE_OS::atoi((const char *) sqlite3_column_text(res_, idx)));
+    return ((const int) atoi((const char *) sqlite3_column_text(res_, idx)));
 }
 
-const bool 
+const bool
 Sqlite3_ResultSet::getBool(const int idx) const
 {
     register const char *v = (const char *) sqlite3_column_text(res_, idx);
@@ -119,18 +118,17 @@ Sqlite3_ResultSet::getBool(const int idx) const
     return (false);
 }
 
-const time_t 
+const time_t
 Sqlite3_ResultSet::getUnixTime(const int idx) const
 {
     struct tm tmp;
     register const char *v = (const char *) sqlite3_column_text(res_, idx);
-    // ACE_DEBUG((LM_DEBUG, ACE_TEXT("Read UnixTime: %s\n"), row_[idx]));
 
     if (v) {
         // switch on the type of field
         // Basically, there are two types of returns I've seen
-        // 1. has a hypen and is fully parseable
-        // 2. has no hypen and is an older timestamp field
+        // 1. has a hyphen and is fully parseable
+        // 2. has no hyphen and is an older timestamp field
         // The others are raw DATE or TIME
         int Ypos = 0;
         int Mpos = 4;
@@ -151,47 +149,43 @@ Sqlite3_ResultSet::getUnixTime(const int idx) const
         tmp.tm_year = (((v[Ypos] - '0') * 1000) + ((v[Ypos+1] - '0') * 100) + ((v[Ypos+2] - '0') * 10) + (v[Ypos+3] - '0')) - 1900;
         tmp.tm_mon = (((v[Mpos] - '0') * 10) + (v[Mpos+1] - '0')) - 1; /* 0 - 11 */
         tmp.tm_mday = (((v[Dpos] - '0') * 10) + (v[Dpos+1] - '0')); /* 1 - 31 */
-        tmp.tm_hour = (((v[hpos] - '0') * 10) + (v[hpos+1] - '0')) - 1; /* 0 - 23 */
+        tmp.tm_hour = (((v[hpos] - '0') * 10) + (v[hpos+1] - '0')); /* 0 - 23 */
         tmp.tm_min = (((v[mpos] - '0') * 10) + (v[mpos+1] - '0')); /* 0-59 */
         tmp.tm_sec = (((v[spos] - '0') * 10) + (v[spos+1] - '0')); /* 0-59 */
 
         /*
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("y=%d m=%d d=%d h=%d m=%d s=%d\n"), 
-                   tmp.tm_year,
-                   tmp.tm_mon,
-                   tmp.tm_mday,
-                   tmp.tm_hour,
-                   tmp.tm_min,
-                   tmp.tm_sec));
+          std::cerr << "y=" << tmp.tm_year << " m=" << tmp.tm_mon;
+          std::cerr << " d=" << tmp.tm_mday << " h=" << tmp.tm_hour;
+          std::cerr << " m=" << tmp.tm_min << " s=" << tmp.tm_sec << std::endl;
         */
         return (mktime(&tmp));
     }
     return (0);
 }
 
-const double 
+const double
 Sqlite3_ResultSet::getDouble(const int idx) const
 {
     char *pEnd;
-    return (ACE_OS::strtod((const char *) sqlite3_column_text(res_, idx), &pEnd));
+    return (strtod((const char *) sqlite3_column_text(res_, idx), &pEnd));
 }
 
-const float 
+const float
 Sqlite3_ResultSet::getFloat(const int idx) const
 {
     return (atof((const char *) sqlite3_column_text(res_, idx)));
 }
 
-const long 
+const long
 Sqlite3_ResultSet::getLong(const int idx) const
 {
     return (atol((const char *) sqlite3_column_text(res_, idx)));
 }
 
-const short 
+const short
 Sqlite3_ResultSet::getShort(const int idx) const
 {
-    return ((short) (ACE_OS::atoi((const char *) sqlite3_column_text(res_, idx))));
+    return ((short) (atoi((const char *) sqlite3_column_text(res_, idx))));
 }
 
 void *
@@ -199,20 +193,7 @@ Sqlite3_ResultSet::operator new (size_t bytes)
 {
   return (::new char[bytes]);
 }
-#if defined (ACE_HAS_NEW_NOTHROW)
-void *
-Sqlite3_ResultSet::operator new (size_t bytes, const ACE_nothrow_t&)
-{
-  return (::new (ACE_nothrow) char[bytes]);
-}
-#if !defined (ACE_LACKS_PLACEMENT_OPERATOR_DELETE)
-void
-Sqlite3_ResultSet::operator delete (void *p, const ACE_nothrow_t&) throw ()
-{
-  delete [] static_cast <char *> (p);
-}
-#endif /* ACE_LACKS_PLACEMENT_OPERATOR_DELETE */
-#endif
+
 void
 Sqlite3_ResultSet::operator delete (void *ptr)
 {
@@ -229,7 +210,7 @@ Sqlite3_Connection::open(const char *database, const char *host, const int port,
     return (true);
 }
 
-bool 
+bool
 Sqlite3_Connection::close(void)
 {
     if (!db_) return (false);
@@ -247,7 +228,7 @@ Sqlite3_Connection::isConnected(void)
     return (true);
 }
 
-bool 
+bool
 Sqlite3_Connection::execute(const char *sql)
 {
     bool ret = false;
@@ -264,7 +245,7 @@ Sqlite3_Connection::execute(const char *sql)
     return (ret);
 }
 
-DB::ResultSet * 
+DB::ResultSet *
 Sqlite3_Connection::executeQuery(const char *sql)
 {
     sqlite3_stmt *vm = NULL;
@@ -277,7 +258,7 @@ Sqlite3_Connection::executeQuery(const char *sql)
     }
 
     DB::ResultSet *c = 0;
-    ACE_NEW_RETURN (c, DB::Sqlite3_ResultSet(vm), 0);
+    c = new DB::Sqlite3_ResultSet(vm);
     return (c);
 }
 
@@ -301,20 +282,20 @@ Sqlite3_Connection::unixtimeToSql(const time_t val)
     char *buf = new char[22];
     struct tm *tmp = new struct tm;
     buf[0] = '\'';
-    ACE_OS::strftime(buf+1, 20, "%Y-%m-%d %H:%M:%S", ACE_OS::localtime_r(&val, tmp));
+    strftime(buf+1, 20, "%Y-%m-%d %H:%M:%S", localtime_r(&val, tmp));
     buf[20] = '\'';
     buf[21] = 0;
     delete tmp;
     return (buf);
 }
 
-const unsigned long 
+const unsigned long
 Sqlite3_Connection::insertId(void)
 {
     return ((const unsigned long) sqlite3_last_insert_rowid(db_));
 }
 
-bool 
+bool
 Sqlite3_Connection::beginTrans(void)
 {
     if (!db_) return (false);
@@ -335,7 +316,7 @@ Sqlite3_Connection::rollbackTrans(void)
     return (execute("ROLLBACK TRANSACTION"));
 }
 
-bool 
+bool
 Sqlite3_Connection::setTransactionMode(const enum TRANS_MODE mode)
 {
     const char *sql = "";
@@ -359,7 +340,7 @@ Sqlite3_Connection::setTransactionMode(const enum TRANS_MODE mode)
     return (execute(sql));
 }
 
-unsigned int 
+unsigned int
 Sqlite3_Connection::errorno(void) const
 {
     return ((unsigned int) sqlite3_errcode(db_));
@@ -375,7 +356,7 @@ const char *
 Sqlite3_Connection::version(void) const
 {
     static char ret[256];
-    ACE_OS::snprintf(ret, 256, "Sqlite3 Driver v0.1 using %s", sqlite3_libversion());
+    snprintf(ret, 256, "Sqlite3 Driver v0.1 using %s", sqlite3_libversion());
     return ((const char *) ret);
 }
 
@@ -384,20 +365,7 @@ Sqlite3_Connection::operator new (size_t bytes)
 {
   return (::new char[bytes]);
 }
-#if defined (ACE_HAS_NEW_NOTHROW)
-void *
-Sqlite3_Connection::operator new (size_t bytes, const ACE_nothrow_t&)
-{
-  return (::new (ACE_nothrow) char[bytes]);
-}
-#if !defined (ACE_LACKS_PLACEMENT_OPERATOR_DELETE)
-void
-Sqlite3_Connection::operator delete (void *p, const ACE_nothrow_t&) throw ()
-{
-  delete [] static_cast <char *> (p);
-}
-#endif /* ACE_LACKS_PLACEMENT_OPERATOR_DELETE */
-#endif
+
 void
 Sqlite3_Connection::operator delete (void *ptr)
 {
@@ -409,13 +377,13 @@ Sqlite3_Connection::operator delete (void *ptr)
 // take care of exporting the function for Win32 platforms.
 //
 
-extern "C" ACE_Svc_Export Connection *create_connection (void);
+extern "C" Connection *create_connection (void);
 
 DB::Connection *
 create_connection (void)
 {
   DB::Sqlite3_Connection *c = 0;
-  ACE_NEW_RETURN (c, DB::Sqlite3_Connection, 0);
+  c = new DB::Sqlite3_Connection;
   return (c);
 }
 
