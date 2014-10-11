@@ -1,0 +1,11 @@
+A database abstraction layer for C++ and ACE framework
+ 
+(C) 2006-2007 Thralling Penguin LLC. All rights reserved.
+
+--------------------------------------------------------------
+
+For information about usage, consult the class reference available
+in the doc directory (if you have Doxygen) or view the online one
+available at Thralling Penguin's website.
+
+

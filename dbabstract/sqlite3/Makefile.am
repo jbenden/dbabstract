@@ -1,0 +1,7 @@
+lib_LTLIBRARIES = libdba_sqlite3.la
+
+libdba_sqlite3_la_SOURCES = sqlite3_db.cpp sqlite3_db.h
+AM_CXXFLAGS = @SQLITE3_CXXFLAGS@
+AM_CFLAGS = @SQLITE3_CFLAGS@
+AM_LDFLAGS = @SQLITE3_LDFLAGS@ @SQLITE3_LIBS@
+
