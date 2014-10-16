@@ -384,7 +384,7 @@ MySQL_Connection::operator delete (void *ptr)
 // take care of exporting the function for Win32 platforms.
 //
 
-extern "C" Connection *create_connection (void);
+extern "C" LIBRARY_API Connection *create_connection (void);
 
 DB::Connection *
 create_connection (void)
