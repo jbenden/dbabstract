@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <strstream>
 #include <iostream>
+#include <string>
 
 #include <Poco/SharedLibrary.h>
 
@@ -314,6 +315,18 @@ namespace DB
         inline Query& operator<<(const char *sql)
         {
             sql_ << sql;
+            return (*this);
+        }
+
+        inline Query& operator<<(const std::string &sql)
+        {
+            sql_ << sql;
+            return (*this);
+        }
+
+        inline Query& operator<<(std::strstream &val)
+        {
+            sql_ << val.str();
             return (*this);
         }
 
