@@ -23,6 +23,7 @@
 #include <Poco/AutoPtr.h>
 
 #include <iostream>
+#include <string>
 
 using namespace DB;
 
@@ -35,7 +36,9 @@ main (int argc, const char * const argv[])
 #ifdef ENABLE_MYSQL
 
   {
-      Poco::AutoPtr <Connection> connection (Connection::factory(LIBPATH "/libdba_mysql.dylib"));
+      std::string path(LIBPATH "/libdba_mysql");
+      path.append(Poco::SharedLibrary::suffix());
+      Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
 
@@ -109,7 +112,9 @@ main (int argc, const char * const argv[])
 
 #ifdef ENABLE_SQLITE3
   {
-      Poco::AutoPtr <Connection> connection (Connection::factory(LIBPATH "/libdba_sqlite3.dylib"));
+      std::string path(LIBPATH "/libdba_sqlite3");
+      path.append(Poco::SharedLibrary::suffix());
+      Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
 
