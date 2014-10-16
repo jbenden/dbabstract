@@ -251,7 +251,7 @@ Sqlite3_Connection::executeQuery(const char *sql)
     sqlite3_stmt *vm = NULL;
     const char *tail = NULL;
 
-    if (!db_) return (false);
+    if (!db_) return (NULL);
 
     if (sqlite3_prepare(db_, sql, -1, &vm, &tail) != SQLITE_OK) {
         return (0);

@@ -245,7 +245,7 @@ MySQL_Connection::execute(const char *sql)
 DB::ResultSet *
 MySQL_Connection::executeQuery(const char *sql)
 {
-    if (!mysql_) return (false);
+    if (!mysql_) return (NULL);
 
     if (mysql_query(mysql_, sql)) {
         return (0);
