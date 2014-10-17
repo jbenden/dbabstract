@@ -356,7 +356,7 @@ const char *
 Sqlite3_Connection::version(void) const
 {
     static char ret[256];
-    snprintf(ret, 256, "Sqlite3 Driver v0.1 using %s", sqlite3_libversion());
+    snprintf(ret, 256, "Sqlite3 Driver v0.2 using %s", sqlite3_libversion());
     return ((const char *) ret);
 }
 

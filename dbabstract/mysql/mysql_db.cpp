@@ -363,7 +363,7 @@ const char *
 MySQL_Connection::version(void) const
 {
     static char ret[256];
-    snprintf(ret, 256, "MySQL Driver v0.1 using MySQL client library v%s", mysql_get_client_info());
+    snprintf(ret, 256, "MySQL Driver v0.2 using MySQL client library v%s", mysql_get_client_info());
     return ((const char *) ret);
 }
 
