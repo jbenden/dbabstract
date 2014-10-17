@@ -25,6 +25,7 @@
 #include <strstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include <Poco/SharedLibrary.h>
 
@@ -328,6 +329,12 @@ namespace DB
         {
             sql_ << val.str();
             val.freeze(false);
+            return (*this);
+        }
+
+        inline Query& operator<<(const std::stringstream &val)
+        {
+            sql_ << val.str();
             return (*this);
         }
 
