@@ -327,6 +327,7 @@ namespace DB
         inline Query& operator<<(std::strstream &val)
         {
             sql_ << val.str();
+            val.freeze(false);
             return (*this);
         }
 
