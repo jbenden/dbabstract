@@ -22,7 +22,6 @@
 
 #include <fstream>
 #include <iomanip>
-#include <strstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -307,11 +306,11 @@ namespace DB
     {
     private:
         Connection &conn_;      /** Internal connection object reference */
-        std::ostrstream sql_;   /** Buffer used to store the SQL query */
+        std::stringstream sql_;   /** Buffer used to store the SQL query */
 
     public:
         Query(Connection &conn) : conn_(conn) {}
-        ~Query() { sql_.freeze(false); }
+        ~Query() {}
 
         inline Query& operator<<(const char *sql)
         {
@@ -322,13 +321,6 @@ namespace DB
         inline Query& operator<<(const std::string &sql)
         {
             sql_ << sql;
-            return (*this);
-        }
-
-        inline Query& operator<<(std::strstream &val)
-        {
-            sql_ << val.str();
-            val.freeze(false);
             return (*this);
         }
 
@@ -400,7 +392,7 @@ namespace DB
         inline const char *str(void)
         {
             sql_ << std::ends;
-            return (sql_.str());
+            return (sql_.str().c_str());
         }
 
         // Friend functions for stream manipulators
