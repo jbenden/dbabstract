@@ -11,6 +11,8 @@ For information about usage, consult the class reference available
 in the doc directory (if you have Doxygen) or view the online one
 available at Thralling Penguin's website.
 
+Additional information is available [here](82b4790abe34f97704f727bad1e222c83b2ee862). Doxygen documentation for the original version is available [here](http://www.thrallingpenguin.com/resources/dbabstract/).
+
 Building On OS X
 ----------------
 
