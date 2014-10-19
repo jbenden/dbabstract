@@ -30,3 +30,14 @@ Then inside a git checkout of this project, do the following:
     $ make install
     $ /usr/local/bin/test_db
 
+Postgres.app Support
+--------------------
+
+It is possible to use Postgres.app as your PostgreSQL database. Use a
+terminal line as follows:
+
+    $ CXX=clang++ LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr/local --enable-sqlite3=/usr/local --enable-doc --enable-pq=/Applications/Postgres.app/Contents/Versions/9.3/
+    $ make
+    $ make install
+    $ /usr/local/bin/test_db
+
