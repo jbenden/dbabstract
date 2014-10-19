@@ -74,6 +74,32 @@ fi
 
 AC_SUBST(SQLITE3)
 
+PQ=""
+AC_ARG_ENABLE(pq,
+	[  --enable-pq=<path>     path to pq],
+[ if test "x$enableval" = "x"; then
+	echo "You must specify a path for PostgreSQL."
+	exit -1
+else
+	PQ_PREFIX="$enableval"
+	AC_SUBST(PQ_PREFIX)
+
+	PQ="pq"
+
+	PQ_LDFLAGS="-L${PQ_PREFIX}/lib -L${PQ_PREFIX}/lib/pq"
+	PQ_CFLAGS="-I${PQ_PREFIX}/include -I${PQ_PREFIX}/include/pq"
+	PQ_CXXFLAGS="-I${PQ_PREFIX}/include -I${PQ_PREFIX}/include/pq"
+	PQ_LIBS="-lpq"
+	AC_SUBST(PQ_LDFLAGS)
+	AC_SUBST(PQ_CFLAGS)
+	AC_SUBST(PQ_CXXFLAGS)
+	AC_SUBST(PQ_LIBS)
+
+	TEST_CXXFLAGS="$TEST_CXXFLAGS -DENABLE_PQ"
+fi
+])
+AC_SUBST(PQ)
+
 CFLAGS="$CFLAGS -I.." 
 CXXFLAGS="$CXXFLAGS -I.."
 LDFLAGS="$LDFLAGS $LIBS -lPocoFoundation"
@@ -84,6 +110,7 @@ AC_OUTPUT(Makefile
 dbabstract/Makefile
 dbabstract/mysql/Makefile
 dbabstract/sqlite3/Makefile
+dbabstract/pq/Makefile
 doc/Makefile
 test/Makefile)
 
