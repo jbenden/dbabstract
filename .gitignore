@@ -1,0 +1,11 @@
+.deps
+Makefile
+*.bak
+autom4te.cache
+config.h
+config.log
+config.status
+.libs
+*.la
+*.lo
+*.o
