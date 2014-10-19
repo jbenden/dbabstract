@@ -634,6 +634,12 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 TEST_CXXFLAGS
+PQ
+PQ_LIBS
+PQ_CXXFLAGS
+PQ_CFLAGS
+PQ_LDFLAGS
+PQ_PREFIX
 SQLITE3
 SQLITE3_LIBS
 SQLITE3_CXXFLAGS
@@ -786,6 +792,7 @@ enable_libtool_lock
 enable_doc
 enable_mysql
 enable_sqlite3
+enable_pq
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1431,6 +1438,7 @@ Optional Features:
   --enable-doc           Disables the building of documentation
   --enable-mysql=<path>     path to mysql
   --enable-sqlite3=<path>    path to sqlite3
+  --enable-pq=<path>     path to pq
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -15277,13 +15285,41 @@ fi
 
 
 
+PQ=""
+# Check whether --enable-pq was given.
+if test "${enable_pq+set}" = set; then :
+  enableval=$enable_pq;  if test "x$enableval" = "x"; then
+	echo "You must specify a path for PostgreSQL."
+	exit -1
+else
+	PQ_PREFIX="$enableval"
+
+
+	PQ="pq"
+
+	PQ_LDFLAGS="-L${PQ_PREFIX}/lib -L${PQ_PREFIX}/lib/pq"
+	PQ_CFLAGS="-I${PQ_PREFIX}/include -I${PQ_PREFIX}/include/pq"
+	PQ_CXXFLAGS="-I${PQ_PREFIX}/include -I${PQ_PREFIX}/include/pq"
+	PQ_LIBS="-lpq"
+
+
+
+
+
+	TEST_CXXFLAGS="$TEST_CXXFLAGS -DENABLE_PQ"
+fi
+
+fi
+
+
+
 CFLAGS="$CFLAGS -I.."
 CXXFLAGS="$CXXFLAGS -I.."
 LDFLAGS="$LDFLAGS $LIBS -lPocoFoundation"
 
 
 
-ac_config_files="$ac_config_files Makefile dbabstract/Makefile dbabstract/mysql/Makefile dbabstract/sqlite3/Makefile doc/Makefile test/Makefile"
+ac_config_files="$ac_config_files Makefile dbabstract/Makefile dbabstract/mysql/Makefile dbabstract/sqlite3/Makefile dbabstract/pq/Makefile doc/Makefile test/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -16396,6 +16432,7 @@ do
     "dbabstract/Makefile") CONFIG_FILES="$CONFIG_FILES dbabstract/Makefile" ;;
     "dbabstract/mysql/Makefile") CONFIG_FILES="$CONFIG_FILES dbabstract/mysql/Makefile" ;;
     "dbabstract/sqlite3/Makefile") CONFIG_FILES="$CONFIG_FILES dbabstract/sqlite3/Makefile" ;;
+    "dbabstract/pq/Makefile") CONFIG_FILES="$CONFIG_FILES dbabstract/pq/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
 

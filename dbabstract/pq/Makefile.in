@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = dbabstract/sqlite3
+subdir = dbabstract/pq
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -122,9 +122,9 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libdba_sqlite3_la_LIBADD =
-am_libdba_sqlite3_la_OBJECTS = sqlite3_db.lo
-libdba_sqlite3_la_OBJECTS = $(am_libdba_sqlite3_la_OBJECTS)
+libdba_pq_la_LIBADD =
+am_libdba_pq_la_OBJECTS = pq_db.lo
+libdba_pq_la_OBJECTS = $(am_libdba_pq_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -181,8 +181,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libdba_sqlite3_la_SOURCES)
-DIST_SOURCES = $(libdba_sqlite3_la_SOURCES)
+SOURCES = $(libdba_pq_la_SOURCES)
+DIST_SOURCES = $(libdba_pq_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -352,11 +352,11 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-lib_LTLIBRARIES = libdba_sqlite3.la
-libdba_sqlite3_la_SOURCES = sqlite3_db.cpp sqlite3_db.h
-AM_CXXFLAGS = @SQLITE3_CXXFLAGS@
-AM_CFLAGS = @SQLITE3_CFLAGS@
-AM_LDFLAGS = @SQLITE3_LDFLAGS@ @SQLITE3_LIBS@
+lib_LTLIBRARIES = libdba_pq.la 
+libdba_pq_la_SOURCES = pq_db.cpp pq_db.h
+AM_CXXFLAGS = @PQ_CXXFLAGS@
+AM_CFLAGS = @PQ_CFLAGS@
+AM_LDFLAGS = @PQ_LDFLAGS@ @PQ_LIBS@
 all: all-am
 
 .SUFFIXES:
@@ -370,9 +370,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu dbabstract/sqlite3/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu dbabstract/pq/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu dbabstract/sqlite3/Makefile
+	  $(AUTOMAKE) --gnu dbabstract/pq/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -427,8 +427,8 @@ clean-libLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libdba_sqlite3.la: $(libdba_sqlite3_la_OBJECTS) $(libdba_sqlite3_la_DEPENDENCIES) $(EXTRA_libdba_sqlite3_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libdba_sqlite3_la_OBJECTS) $(libdba_sqlite3_la_LIBADD) $(LIBS)
+libdba_pq.la: $(libdba_pq_la_OBJECTS) $(libdba_pq_la_DEPENDENCIES) $(EXTRA_libdba_pq_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libdba_pq_la_OBJECTS) $(libdba_pq_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -436,7 +436,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sqlite3_db.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pq_db.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

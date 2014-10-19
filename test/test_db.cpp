@@ -185,6 +185,83 @@ main (int argc, const char * const argv[])
 
 #endif
 
+#ifdef ENABLE_PQ
+  {
+      std::string path(LIBPATH "/libdba_pq");
+      path.append(Poco::SharedLibrary::suffix());
+      Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
+
+    std::cout << "OK: Reported version: " << connection->version () << std::endl;
+
+    if (connection->open("dbname = postgres", NULL, 0, NULL, NULL)) {
+        std::cout << "OK: Connected to database." << std::endl;
+
+        time_t now = time(NULL);
+        Query q((*connection));
+        q << "SELECT id, data FROM testing WHERE data=" << qstr("ben'den") << " and 1=1 and added=" << unixtime(now);
+        std::cout << "SQL = " << q.str() << std::endl;
+
+        const char *s1 = "CREATE TABLE testing (id serial, data text not null, added timestamp, cost real)";
+        if (connection->execute(s1)) {
+            std::cout << "OK: Created table testing" << std::endl;
+
+            ResultSet *rs3 = connection->executeQuery("SELECT id, data FROM testing");
+            if (rs3) {
+                while (rs3->next()) {
+                    std::cout << "READ: id=" << rs3->getInteger(0) << " data=" << rs3->getString(1) << std::endl;
+                }
+                rs3->close();
+            }
+            std::cout << "OK: Read nothing from table" << std::endl;
+
+            char s2[512];
+            sprintf(s2, "INSERT INTO testing (data,added,cost) VALUES ('joe',NOW(),1.99)");
+            if (!connection->execute(s2)) {
+                std::cout << "FAILED: Insert 1 failed" << std::endl;
+            }
+
+            ResultSet *rs = connection->executeQuery("SELECT id, data, added, cost FROM testing");
+            if (rs) {
+                while (rs->next()) {
+                    std::cout << "READ: id=" << rs->getInteger(0) << " data=" << rs->getString(1) << " added=" << rs->getUnixTime(2) << " cost=" << rs->getDouble(3) << std::endl;
+                    time_t added = rs->getUnixTime(2);
+                    std::cout << "READ: added formatted time: " << ctime(&added) << std::endl;
+                }
+                rs->close();
+            }
+            std::cout << "OK: Single record" << std::endl;
+
+            const char *s3 = "INSERT INTO testing (data,added,cost) VALUES ('benden',NOW(),0)";
+            if (!connection->execute(s3)) {
+                std::cout << "FAILED: Insert 2 failed" << std::endl;
+            }
+
+            ResultSet *rs1 = connection->executeQuery("SELECT id, data FROM testing");
+            if (rs1) {
+                while (rs1->next()) {
+                    std::cout << "READ: id=" << rs1->getInteger(0) << " data=" << rs1->getString(1) << std::endl;
+                }
+                rs1->close();
+            }
+            std::cout << "OK: Two records" << std::endl;
+
+            const char *e1 = "DROP TABLE testing";
+            if (connection->execute(e1)) {
+                std::cout << "OK: Dropped table testing" << std::endl;
+            } else {
+                std::cout << "FAILED: Could not drop table testing" << std::endl;
+            }
+        } else {
+            std::cout << "FAILED: Creating table testing" << std::endl;
+        }
+    } else {
+        std::cout << "FAILED: Could not connect to PostgreSQL database." << std::endl;
+    }
+  }
+
+#endif
+
+
   return 0;
 }
 
