@@ -9,6 +9,7 @@ before_install:
   - mysql -u root -e 'create database test;'
 install: LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr --enable-sqlite3=/usr
 script:
+  - autoreconf -i
   - make
   - make install
   - /usr/local/bin/test_db
