@@ -32,6 +32,7 @@ typedef Connection* (*Connection_Creator) (void);
 int
 main (int argc, const char * const argv[])
 {
+    int result = 0;
 
 #ifdef ENABLE_MYSQL
 
@@ -65,6 +66,7 @@ main (int argc, const char * const argv[])
 
             const char *s2 = "INSERT INTO testing SET data='joe', added=now(), cost=1.99";
             if (!connection->execute(s2)) {
+                result = 1;
                 std::cout << "FAILED: Insert 1 failed" << std::endl;
             }
 
@@ -81,6 +83,7 @@ main (int argc, const char * const argv[])
 
             const char *s3 = "INSERT INTO testing SET data='benden'";
             if (!connection->execute(s3)) {
+                result = 1;
                 std::cout << "FAILED: Insert 2 failed" << std::endl;
             }
 
@@ -97,12 +100,15 @@ main (int argc, const char * const argv[])
             if (connection->execute(e1)) {
                 std::cout << "OK: Dropped table testing" << std::endl;
             } else {
+                result = 1;
                 std::cout << "FAILED: Could not drop table testing" << std::endl;
             }
         } else {
+            result = 1;
             std::cout << "FAILED: Creating table testing" << std::endl;
         }
     } else {
+        result = 1;
         std::cout << "FAILED: Could not connect to database." << std::endl;
     }
   }
@@ -141,6 +147,7 @@ main (int argc, const char * const argv[])
 
             const char *s2 = "INSERT INTO testing VALUES (NULL,'joe',datetime('now'),1.99)";
             if (!connection->execute(s2)) {
+                result = 1;
                 std::cout << "FAILED: Insert 1 failed" << std::endl;
             }
 
@@ -157,6 +164,7 @@ main (int argc, const char * const argv[])
 
             const char *s3 = "INSERT INTO testing VALUES (NULL,'benden',0,0)";
             if (!connection->execute(s3)) {
+                result = 1;
                 std::cout << "FAILED: Insert 2 failed" << std::endl;
             }
 
@@ -173,12 +181,15 @@ main (int argc, const char * const argv[])
             if (connection->execute(e1)) {
                 std::cout << "OK: Dropped table testing" << std::endl;
             } else {
+                result = 1;
                 std::cout << "FAILED: Could not drop table testing" << std::endl;
             }
         } else {
+            result = 1;
             std::cout << "FAILED: Creating table testing" << std::endl;
         }
     } else {
+        result = 1;
         std::cout << "FAILED: Could not connect to database." << std::endl;
     }
   }
@@ -217,6 +228,7 @@ main (int argc, const char * const argv[])
             char s2[512];
             sprintf(s2, "INSERT INTO testing (data,added,cost) VALUES ('joe',NOW(),1.99)");
             if (!connection->execute(s2)) {
+                result = 1;
                 std::cout << "FAILED: Insert 1 failed" << std::endl;
             }
 
@@ -233,6 +245,7 @@ main (int argc, const char * const argv[])
 
             const char *s3 = "INSERT INTO testing (data,added,cost) VALUES ('benden',NOW(),0)";
             if (!connection->execute(s3)) {
+                result = 1;
                 std::cout << "FAILED: Insert 2 failed" << std::endl;
             }
 
@@ -249,19 +262,21 @@ main (int argc, const char * const argv[])
             if (connection->execute(e1)) {
                 std::cout << "OK: Dropped table testing" << std::endl;
             } else {
+                result = 1;
                 std::cout << "FAILED: Could not drop table testing" << std::endl;
             }
         } else {
+            result = 1;
             std::cout << "FAILED: Creating table testing" << std::endl;
         }
     } else {
+        result = 1;
         std::cout << "FAILED: Could not connect to PostgreSQL database." << std::endl;
     }
   }
 
 #endif
 
-
-  return 0;
+  return (result);
 }
 
