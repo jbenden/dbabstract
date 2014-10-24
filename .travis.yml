@@ -6,7 +6,7 @@ services:
   - mysql
   - sqlite
 before_install:
-  - apt-get mysql-dev sqlite-dev libpoco-dev
+  - apt-get sqlite-dev libpoco-dev
   - mysql -u root -e 'create database test;'
 install: LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr --enable-sqlite3=/usr
 script:
