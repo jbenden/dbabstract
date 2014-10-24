@@ -4,7 +4,7 @@ language:
   - objective-c
 before_install:
   - brew update
-  - brew install sqlite mysql-connector-c
+  - brew install sqlite mysql-connector-c poco
   - mysql -e 'create database test;'
 install: CXX=clang++ LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr/local --enable-sqlite=/usr/local
 script:

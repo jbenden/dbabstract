@@ -1,5 +1,4 @@
----
-
+[![Build Status](https://travis-ci.org/jbenden/dbabstract.svg?style=flat&branch=master)](https://travis-ci.org/jbenden/dbabstract)
 A database abstraction layer for C++ and POCO framework
 =======================================================
  
@@ -20,8 +19,9 @@ As a requirement to building you must have Homebrew and the following
 modules installed:
 
 * poco
-* mysql
-* sqlite3
+* mysql (optional)
+* sqlite3 (optional)
+* postgresql (optional)
 
 Then inside a git checkout of this project, do the following:
 
