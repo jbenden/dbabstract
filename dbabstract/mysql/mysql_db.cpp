@@ -21,6 +21,8 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 #include "mysql_db.h"
 

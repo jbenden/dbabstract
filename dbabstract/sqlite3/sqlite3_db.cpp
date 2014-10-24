@@ -21,6 +21,8 @@
 #include <iomanip>
 #include <iostream>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "sqlite3_db.h"
 
@@ -271,7 +273,7 @@ Sqlite3_Connection::escape(const char *str)
     char *esc = sqlite3_mprintf("\'%q\'", str);
     char *ret = new char[strlen(esc) + 1];
     strcpy(ret, esc);
-    free(esc);
+    sqlite3_free(esc);
     return (ret);
 
 }

@@ -263,8 +263,7 @@ namespace DB
             Connection_Creator cc;
             try {
                 void *void_ptr = dll.getSymbol("create_connection");
-                ptrdiff_t tmp = reinterpret_cast<ptrdiff_t>(void_ptr);
-                cc = reinterpret_cast<Connection_Creator>(tmp);
+                cc = reinterpret_cast<Connection_Creator>(void_ptr);
                 if (!cc) {
                     std::cerr << "Shared Library contains the symbol interface for db-abstract, but returned NULL for some reason." << std::endl;
                     return (NULL);
