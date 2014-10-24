@@ -276,7 +276,6 @@ main (int argc, const char * const argv[])
   }
 
 #endif
-
   return (result);
 }
 
