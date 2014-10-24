@@ -11,5 +11,5 @@ install: LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql
 script:
   - autoreconf -i
   - make
-  - make install
+  - sudo make install
   - /usr/local/bin/test_db
