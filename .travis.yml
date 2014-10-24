@@ -2,6 +2,8 @@
 #
 language:
   - objective-c
+services:
+  - mysql
 before_install:
   - brew update
   - brew install sqlite mysql-connector-c poco
