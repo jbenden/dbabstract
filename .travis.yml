@@ -1,0 +1,13 @@
+# Mac OS X (https://github.com/travis-ci-tester/toolchain-table)
+#
+language:
+  - objective-c
+before_install:
+  - brew update
+  - brew install sqlite mysql-connector-c
+  - mysql -e 'create database test;'
+install: CXX=clang++ LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr/local --enable-sqlite=/usr/local
+script:
+  - make
+  - make install
+  - /usr/local/bin/test_db
