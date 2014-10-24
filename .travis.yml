@@ -1,14 +1,14 @@
 # Mac OS X (https://github.com/travis-ci-tester/toolchain-table)
 #
 language:
-  - objective-c
+  - cpp
 services:
   - mysql
+  - sqlite
 before_install:
-  - brew update
-  - brew install sqlite mysql-connector-c poco
+  - apt-get mysql-dev sqlite-dev libpoco-dev
   - mysql -e 'create database test;'
-install: CXX=clang++ LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr/local --enable-sqlite=/usr/local
+install: LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr --enable-sqlite=/usr
 script:
   - make
   - make install
