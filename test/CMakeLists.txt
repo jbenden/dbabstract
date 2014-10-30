@@ -1,0 +1,5 @@
+if (test)
+    enable_testing()
+    add_executable(test_db test_db.cpp)
+    add_test(that-test-I-made test_db)
+endif()
