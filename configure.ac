@@ -21,6 +21,12 @@ AC_ARG_ENABLE(doc, [  --enable-doc           Disables the building of documentat
 ])
 AC_SUBST(DOC)
 
+AC_ARG_ENABLE(coverage, [  --enable-coverage       Enables the building of code coverage],
+              [
+               CXXFLAGS="$CXXFLAGS -fprofile-arcs -ftest-coverage"
+               AC_SUBST(CXXFLAGS)
+               ])
+
 MYSQL=""
 AC_ARG_ENABLE(mysql,
 	[  --enable-mysql=<path>     path to mysql],

@@ -9,3 +9,7 @@ config.status
 *.la
 *.lo
 *.o
+coverage*
+*.gcda
+*.gcno
+sqlite3_test

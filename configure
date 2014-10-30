@@ -790,6 +790,7 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 enable_doc
+enable_coverage
 enable_mysql
 enable_sqlite3
 enable_pq
@@ -1436,6 +1437,7 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-doc           Disables the building of documentation
+  --enable-coverage       Enables the building of code coverage
   --enable-mysql=<path>     path to mysql
   --enable-sqlite3=<path>    path to sqlite3
   --enable-pq=<path>     path to pq
@@ -15226,6 +15228,15 @@ fi
 
 fi
 
+
+
+# Check whether --enable-coverage was given.
+if test "${enable_coverage+set}" = set; then :
+  enableval=$enable_coverage;
+               CXXFLAGS="$CXXFLAGS -fprofile-arcs -ftest-coverage"
+
+
+fi
 
 
 MYSQL=""
