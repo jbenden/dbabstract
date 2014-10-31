@@ -4,9 +4,11 @@ language:
   - cpp
 services:
   - mysql
+  - postgres
 before_install:
   - sudo apt-get install libpoco-dev
   - mysql -u root -e 'create database test;'
+  - psql -c 'create database postgres;' -U postgres
 install: cmake -DPQ_FOUND=FALSE .
 script:
   - make
