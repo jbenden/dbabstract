@@ -19,7 +19,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLIBPATH=\\\"${CMAKE_INSTALL_PREFIX}/li
 add_executable(test_db test_db.cpp)
 target_link_libraries(test_db PocoFoundation)
 
-add_test(test test_db)
+add_test(NAME mytest COMMAND test_db)
 #install(TARGETS test_db DESTINATION bin)
 
 #endif()
