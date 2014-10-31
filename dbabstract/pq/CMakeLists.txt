@@ -10,7 +10,7 @@ IF (PQ_INCLUDE_DIR)
   SET(PQ_FIND_QUIETLY TRUE)
 ENDIF (PQ_INCLUDE_DIR)
 
-FIND_PATH(PQ_INCLUDE_DIR pq.h
+FIND_PATH(PQ_INCLUDE_DIR pg_config.h
   /Applications/Postgres.app/Contents/Versions/9.3/include
   /usr/local/include
   /usr/include
@@ -18,16 +18,15 @@ FIND_PATH(PQ_INCLUDE_DIR pq.h
 
 SET(PQ_NAMES pq)
 FIND_LIBRARY(PQ_LIBRARY
-  NAMES ${MYSQL_NAMES}
+  NAMES ${PQ_NAMES}
   PATHS /usr/lib /usr/local/lib /Applications/Postgres.app/Contents/Versions/9.3/lib
-  PATH_SUFFIXES pq
 )
 
 IF (PQ_INCLUDE_DIR AND PQ_LIBRARY)
-  SET(PQ_FOUND TRUE)
-  SET( PQ_LIBRARIES ${MYSQL_LIBRARY} )
+    SET(PQ_FOUND TRUE PARENT_SCOPE)
+  SET( PQ_LIBRARIES ${PQ_LIBRARY} )
 ELSE (PQ_INCLUDE_DIR AND PQ_LIBRARY)
-  SET(PQ_FOUND FALSE)
+    SET(PQ_FOUND FALSE PARENT_SCOPE)
   SET( PQ_LIBRARIES )
 ENDIF (PQ_INCLUDE_DIR AND PQ_LIBRARY)
 
@@ -37,7 +36,7 @@ IF (PQ_FOUND)
   ENDIF (NOT PQ_FIND_QUIETLY)
 ELSE (PQ_FOUND)
   IF (PQ_FIND_REQUIRED)
-    MESSAGE(STATUS "Looked for MySQL libraries named ${PQ_NAMES}.")
+      MESSAGE(STATUS "Looked for PostgreSQL libraries named ${PQ_NAMES}.")
     MESSAGE(FATAL_ERROR "Could NOT find PostgreSQL library")
   ENDIF (PQ_FIND_REQUIRED)
 ENDIF (PQ_FOUND)
@@ -48,11 +47,13 @@ MARK_AS_ADVANCED(
   )
 
 if (PQ_FOUND)
-    add_library(pq_dba SHARED pq_db.cpp)
+    add_library(pq_dba MODULE pq_db.cpp)
     add_library(pq_dba_static STATIC pq_db.cpp)
     set_target_properties(pq_dba_static PROPERTIES OUTPUT_NAME pq_dba)
-    set(CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS PQ_INCLUDE_DIR)
-    target_link_libraries(mysql_dba PQ_LIBRARY)
-    target_link_libraries(mysql_dba_static PQ_LIBRARY)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${PQ_INCLUDE_DIR}")
+    target_link_libraries(pq_dba PRIVATE ${PQ_LIBRARY})
+    target_link_libraries(pq_dba_static PRIVATE ${PQ_LIBRARY})
+    install(TARGETS pq_dba LIBRARY DESTINATION lib)
+    install(TARGETS pq_dba_static ARCHIVE DESTINATION lib)
 endif()
 

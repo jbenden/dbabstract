@@ -13,3 +13,9 @@ coverage*
 *.gcda
 *.gcno
 sqlite3_test
+CMakeFiles
+*.cmake
+Doxyfile
+doc/html
+CMakeCache.txt
+test/test_db

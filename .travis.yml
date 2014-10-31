@@ -7,9 +7,8 @@ services:
 before_install:
   - sudo apt-get install libpoco-dev
   - mysql -u root -e 'create database test;'
-install: LIBPATH="/usr/local/lib" ./configure --prefix=/usr/local --enable-mysql=/usr --enable-sqlite3=/usr
+install: cmake .
 script:
-  - autoreconf -i
   - make
   - sudo make install
-  - /usr/local/bin/test_db
+  - ./test/test_db

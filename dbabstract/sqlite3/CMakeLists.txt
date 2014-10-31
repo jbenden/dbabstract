@@ -24,10 +24,10 @@ FIND_LIBRARY(SQLITE_LIBRARY
 )
 
 IF (SQLITE_INCLUDE_DIR AND SQLITE_LIBRARY)
-    SET(SQLITE_FOUND TRUE)
+    SET(SQLITE_FOUND TRUE PARENT_SCOPE)
     SET( SQLITE_LIBRARIES ${SQLITE_LIBRARY} )
 ELSE (SQLITE_INCLUDE_DIR AND SQLITE_LIBRARY)
-    SET(SQLITE_FOUND FALSE)
+    SET(SQLITE_FOUND FALSE PARENT_SCOPE)
     SET( SQLITE_LIBRARIES )
 ENDIF (SQLITE_INCLUDE_DIR AND SQLITE_LIBRARY)
 
@@ -48,11 +48,13 @@ MARK_AS_ADVANCED(
   )
 
 if (SQLITE_FOUND)
-    add_library(sqlite3_dba SHARED sqlite3_db.cpp)
+    add_library(sqlite3_dba MODULE sqlite3_db.cpp)
     add_library(sqlite3_dba_static STATIC sqlite3_db.cpp)
-    set_target_properties(mysql_dba_static PROPERTIES OUTPUT_NAME sqlite3_dba)
-    set(CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS SQLITE_INCLUDE_DIR)
-    target_link_libraries(sqlite3_dba SQLITE_LIBRARY)
-    target_link_libraries(sqlite3_dba_static SQLITE_LIBRARY)
+    set_target_properties(sqlite3_dba_static PROPERTIES OUTPUT_NAME sqlite3_dba)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${SQLITE_INCLUDE_DIR}")
+    target_link_libraries(sqlite3_dba ${SQLITE_LIBRARY})
+    target_link_libraries(sqlite3_dba_static ${SQLITE_LIBRARY})
+    install(TARGETS sqlite3_dba LIBRARY DESTINATION lib)
+    install(TARGETS sqlite3_dba_static ARCHIVE DESTINATION lib)
 endif()
 

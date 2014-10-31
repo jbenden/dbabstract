@@ -1,5 +1,0 @@
-lib_LTLIBRARIES = libdba_mysql.la 
-libdba_mysql_la_SOURCES = mysql_db.cpp mysql_db.h
-AM_CXXFLAGS=@MYSQL_CXXFLAGS@
-AM_CFLAGS=@MYSQL_CFLAGS@
-AM_LDFLAGS=@MYSQL_LDFLAGS@ @MYSQL_LIBS@

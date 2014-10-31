@@ -1,5 +1,0 @@
-lib_LTLIBRARIES = libdba_pq.la 
-libdba_pq_la_SOURCES = pq_db.cpp pq_db.h
-AM_CXXFLAGS=@PQ_CXXFLAGS@
-AM_CFLAGS=@PQ_CFLAGS@
-AM_LDFLAGS=@PQ_LDFLAGS@ @PQ_LIBS@

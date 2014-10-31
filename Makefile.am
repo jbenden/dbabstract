@@ -1,1 +1,0 @@
-SUBDIRS = dbabstract test @DOC@

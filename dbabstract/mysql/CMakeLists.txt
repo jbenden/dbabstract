@@ -19,14 +19,13 @@ SET(MYSQL_NAMES mysqlclient mysqlclient_r)
 FIND_LIBRARY(MYSQL_LIBRARY
   NAMES ${MYSQL_NAMES}
   PATHS /usr/lib /usr/local/lib
-  PATH_SUFFIXES mysql
 )
 
 IF (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARY)
-  SET(MYSQL_FOUND TRUE)
+    SET(MYSQL_FOUND TRUE PARENT_SCOPE)
   SET( MYSQL_LIBRARIES ${MYSQL_LIBRARY} )
 ELSE (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARY)
-  SET(MYSQL_FOUND FALSE)
+    SET(MYSQL_FOUND FALSE PARENT_SCOPE)
   SET( MYSQL_LIBRARIES )
 ENDIF (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARY)
 
@@ -47,11 +46,15 @@ MARK_AS_ADVANCED(
   )
 
 if (MYSQL_FOUND)
-    add_library(mysql_dba SHARED mysql_db.cpp)
+    add_library(mysql_dba MODULE mysql_db.cpp)
     add_library(mysql_dba_static STATIC mysql_db.cpp)
     set_target_properties(mysql_dba_static PROPERTIES OUTPUT_NAME mysql_dba)
-    set(CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS MYSQL_INCLUDE_DIR)
-    target_link_libraries(mysql_dba MYSQL_LIBRARY)
-    target_link_libraries(mysql_dba_static MYSQL_LIBRARY)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${MYSQL_INCLUDE_DIR}")
+    target_link_libraries(mysql_dba PRIVATE ${MYSQL_LIBRARY})
+    target_link_libraries(mysql_dba_static PRIVATE ${MYSQL_LIBRARY})
+    install(TARGETS mysql_dba
+        LIBRARY DESTINATION lib)
+    install(TARGETS mysql_dba_static
+        ARCHIVE DESTINATION lib)
 endif()
 
