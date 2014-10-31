@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8.11)
 
 #set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-set(MYSQL_FOUND TRUE)
-set(PQ_FOUND TRUE)
-set(SQLITE_FOUND TRUE)
+option(MYSQL_FOUND "Build MySQL driver." TRUE)
+option(PQ_FOUND "Build PostgreSQL driver." TRUE)
+option(SQLITE_FOUND "Build SQLite3 driver." TRUE)
 
 option(test "Build all tests." ON)
 
