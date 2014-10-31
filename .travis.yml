@@ -7,7 +7,7 @@ services:
 before_install:
   - sudo apt-get install libpoco-dev
   - mysql -u root -e 'create database test;'
-install: cmake .
+install: cmake -DPQ_FOUND=FALSE .
 script:
   - make
   - sudo make install
