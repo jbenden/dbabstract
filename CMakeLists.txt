@@ -6,6 +6,7 @@ option(test "Build all tests." ON)
 
 project (dbabstract)
 set(CMAKE_CXX_FLAGS "-g -Wall -I${CMAKE_SOURCE_DIR}/dbabstract")
+set(ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs")
 
 add_subdirectory(dbabstract)
 add_subdirectory(doc)

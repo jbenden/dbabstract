@@ -53,6 +53,7 @@ if (MYSQL_FOUND)
     target_link_libraries(mysql_dba ${MYSQL_LIBRARY})
     target_link_libraries(mysql_dba_static ${MYSQL_LIBRARY})
     set_target_properties(mysql_dba_static PROPERTIES COMPILE_FLAGS -DSTATIC)
+    set_target_properties(mysql_dba_static PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
     install(TARGETS mysql_dba
         LIBRARY DESTINATION lib)
     install(TARGETS mysql_dba_static
