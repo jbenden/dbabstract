@@ -5,7 +5,7 @@ option(test "Build all tests." ON)
 #cmake_policy(SET CMP0042 NEW)
 
 project (dbabstract)
-set(CMAKE_CXX_FLAGS "-g -Wall")
+set(CMAKE_CXX_FLAGS "-g -Wall -I${CMAKE_SOURCE_DIR}/dbabstract")
 
 add_subdirectory(dbabstract)
 add_subdirectory(doc)
