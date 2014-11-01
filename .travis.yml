@@ -10,6 +10,6 @@ before_install:
 install: cmake -DPQ_FOUND=FALSE .
 script:
   - make
-  - sudo make install
+  - sudo make install VERBOSE=1
   - ./test/test_db
   - ./test/test_db static
