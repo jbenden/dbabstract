@@ -37,7 +37,7 @@ main (int argc, const char * const argv[])
 #ifdef ENABLE_MYSQL
 
   {
-      std::string path(LIBPATH "/libdba_mysql");
+      std::string path(LIBPATH "/libmysql_dba");
       path.append(Poco::SharedLibrary::suffix());
       Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
@@ -118,7 +118,7 @@ main (int argc, const char * const argv[])
 
 #ifdef ENABLE_SQLITE3
   {
-      std::string path(LIBPATH "/libdba_sqlite3");
+      std::string path(LIBPATH "/libsqlite3_dba");
       path.append(Poco::SharedLibrary::suffix());
       Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
@@ -198,7 +198,7 @@ main (int argc, const char * const argv[])
 
 #ifdef ENABLE_PQ
   {
-      std::string path(LIBPATH "/libdba_pq");
+      std::string path(LIBPATH "/libpq_dba");
       path.append(Poco::SharedLibrary::suffix());
       Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
