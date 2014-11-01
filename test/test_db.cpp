@@ -29,22 +29,37 @@ using namespace DB;
 
 typedef Connection* (*Connection_Creator) (void);
 
+int enable_static = 0;
+
+extern "C" Connection * create_mysql_connection(void);
+extern "C" Connection * create_sqlite3_connection(void);
+extern "C" Connection * create_pq_connection(void);
+
 int
 main (int argc, const char * const argv[])
 {
     int result = 0;
 
+    if (argc > 1) {
+        enable_static = 1;
+        printf("Using static libraries.\n");
+    }
+
 #ifdef ENABLE_MYSQL
 
   {
+      Poco::AutoPtr <Connection> connection;
+   if (!enable_static) {
       std::string path(LIBPATH "/libmysql_dba");
 #ifndef __APPLE__
       path.append(Poco::SharedLibrary::suffix());
 #else
       path.append(".so");
 #endif
-      Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
-
+      connection = Connection::factory(path.c_str());
+    } else {
+        connection = create_mysql_connection();
+    }
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
 
     if (connection->open("test", "127.0.0.1", 3306, "root", "")) {
@@ -128,7 +143,12 @@ main (int argc, const char * const argv[])
 #else
       path.append(".so");
 #endif
-      Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
+      Poco::AutoPtr <Connection> connection;
+      if (!enable_static) {
+          connection = Connection::factory(path.c_str());
+      } else {
+          connection = create_sqlite3_connection();
+      }
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
 
@@ -212,7 +232,13 @@ main (int argc, const char * const argv[])
 #else
       path.append(".so");
 #endif
-      Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
+      Poco::AutoPtr <Connection> connection;
+     
+      if (!enable_static) {
+          connection = Connection::factory(path.c_str());
+      } else {
+          connection = create_pq_connection();
+      }
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
 

@@ -52,6 +52,7 @@ if (MYSQL_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${MYSQL_INCLUDE_DIR}")
     target_link_libraries(mysql_dba ${MYSQL_LIBRARY})
     target_link_libraries(mysql_dba_static ${MYSQL_LIBRARY})
+    set_target_properties(mysql_dba_static PROPERTIES COMPILE_FLAGS -DSTATIC)
     install(TARGETS mysql_dba
         LIBRARY DESTINATION lib)
     install(TARGETS mysql_dba_static

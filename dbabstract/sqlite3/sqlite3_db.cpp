@@ -379,6 +379,7 @@ Sqlite3_Connection::operator delete (void *ptr)
 // take care of exporting the function for Win32 platforms.
 //
 
+#ifndef STATIC
 extern "C" LIBRARY_API Connection *create_connection (void);
 
 DB::Connection *
@@ -388,6 +389,19 @@ create_connection (void)
   c = new DB::Sqlite3_Connection;
   return (c);
 }
+#else
+
+extern "C" LIBRARY_API Connection *create_sqlite3_connection (void);
+
+DB::Connection *
+create_sqlite3_connection (void)
+{
+  DB::Sqlite3_Connection *c = 0;
+  c = new DB::Sqlite3_Connection;
+  return (c);
+}
+
+#endif
 
 }
 

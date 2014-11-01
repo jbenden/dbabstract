@@ -383,6 +383,8 @@ PQ_Connection::operator delete (void *ptr)
 // take care of exporting the function for Win32 platforms.
 //
 
+#ifndef STATIC
+
 extern "C" LIBRARY_API DB::Connection *create_connection (void);
 
 DB::Connection *
@@ -392,6 +394,20 @@ create_connection (void)
   c = new DB::PQ_Connection;
   return (c);
 }
+
+#else
+
+extern "C" LIBRARY_API DB::Connection *create_pq_connection (void);
+
+DB::Connection *
+create_pq_connection (void)
+{
+  DB::PQ_Connection *c = 0;
+  c = new DB::PQ_Connection;
+  return (c);
+}
+
+#endif
 
 }
 
