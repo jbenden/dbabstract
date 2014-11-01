@@ -50,8 +50,8 @@ if (MYSQL_FOUND)
     add_library(mysql_dba_static STATIC mysql_db.cpp)
     set_target_properties(mysql_dba_static PROPERTIES OUTPUT_NAME mysql_dba)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${MYSQL_INCLUDE_DIR}")
-    target_link_libraries(mysql_dba PRIVATE ${MYSQL_LIBRARY})
-    target_link_libraries(mysql_dba_static PRIVATE ${MYSQL_LIBRARY})
+    target_link_libraries(mysql_dba ${MYSQL_LIBRARY})
+    target_link_libraries(mysql_dba_static ${MYSQL_LIBRARY})
     install(TARGETS mysql_dba
         LIBRARY DESTINATION lib)
     install(TARGETS mysql_dba_static
