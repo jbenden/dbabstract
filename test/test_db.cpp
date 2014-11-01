@@ -244,7 +244,7 @@ main (int argc, const char * const argv[])
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
 
-    if (connection->open("dbname = postgres", NULL, 0, NULL, NULL)) {
+    if (connection->open("host = localhost dbname = postgres", NULL, 0, NULL, NULL)) {
         std::cout << "OK: Connected to database." << std::endl;
 
         time_t now = time(NULL);
