@@ -5,7 +5,7 @@ language:
 services:
   - mysql
 before_install:
-  - sudo apt-get install libpoco-dev
+  - sudo apt-get install libpoco-dev doxygen
   - mysql -u root -e 'create database test;'
 install: cmake -DPQ_FOUND=FALSE .
 script:
