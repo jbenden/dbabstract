@@ -38,7 +38,11 @@ main (int argc, const char * const argv[])
 
   {
       std::string path(LIBPATH "/libmysql_dba");
+#ifndef __APPLE__
       path.append(Poco::SharedLibrary::suffix());
+#else
+      path.append(".so");
+#endif
       Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
@@ -119,7 +123,11 @@ main (int argc, const char * const argv[])
 #ifdef ENABLE_SQLITE3
   {
       std::string path(LIBPATH "/libsqlite3_dba");
+#ifndef __APPLE__
       path.append(Poco::SharedLibrary::suffix());
+#else
+      path.append(".so");
+#endif
       Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
@@ -199,7 +207,11 @@ main (int argc, const char * const argv[])
 #ifdef ENABLE_PQ
   {
       std::string path(LIBPATH "/libpq_dba");
+#ifndef __APPLE__
       path.append(Poco::SharedLibrary::suffix());
+#else
+      path.append(".so");
+#endif
       Poco::AutoPtr <Connection> connection (Connection::factory(path.c_str()));
 
     std::cout << "OK: Reported version: " << connection->version () << std::endl;
