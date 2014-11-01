@@ -9,7 +9,7 @@ before_install:
   - mysql -u root -e 'create database test;'
 install: cmake -DPQ_FOUND=FALSE .
 script:
-  - make VERBOSE=1
+  - make
   - sudo make install
   - ./test/test_db
   - ./test/test_db static
