@@ -31,9 +31,11 @@ typedef Connection* (*Connection_Creator) (void);
 
 int enable_static = 0;
 
-extern "C" Connection * create_mysql_connection(void);
-extern "C" Connection * create_sqlite3_connection(void);
-extern "C" Connection * create_pq_connection(void);
+extern "C" {
+extern Connection * create_mysql_connection(void);
+extern Connection * create_sqlite3_connection(void);
+extern Connection * create_pq_connection(void);
+}
 
 int
 main (int argc, const char * const argv[])
