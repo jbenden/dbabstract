@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8.7)
 
 option(test "Build all tests." ON)
 
-cmake_policy(SET CMP0042 NEW)
+#cmake_policy(SET CMP0042 NEW)
 
 project (dbabstract)
 set(CMAKE_CXX_FLAGS "-g -Wall")
