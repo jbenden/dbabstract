@@ -69,13 +69,13 @@ namespace DB
         virtual unsigned long recordCount(void) const = 0;
 
         virtual const char *getString(const int idx) const = 0;
-        virtual const int getInteger(const int idx) const = 0;
-        virtual const bool getBool(const int idx) const = 0;
-        virtual const time_t getUnixTime(const int idx) const = 0;
-        virtual const double getDouble(const int idx) const = 0;
-        virtual const float getFloat(const int idx) const = 0;
-        virtual const long getLong(const int idx) const = 0;
-        virtual const short getShort(const int idx) const = 0;
+        virtual int getInteger(const int idx) const = 0;
+        virtual bool getBool(const int idx) const = 0;
+        virtual time_t getUnixTime(const int idx) const = 0;
+        virtual double getDouble(const int idx) const = 0;
+        virtual float getFloat(const int idx) const = 0;
+        virtual long getLong(const int idx) const = 0;
+        virtual short getShort(const int idx) const = 0;
     };
 
     /**
@@ -177,7 +177,7 @@ namespace DB
          *
          * @return const unsigned long
          */
-        virtual const unsigned long insertId(void) = 0;
+        virtual unsigned long insertId(void) = 0;
 
         /**
          * Begins a new transaction. If for some reason it fails, false

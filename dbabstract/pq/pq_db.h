@@ -48,13 +48,13 @@ class PQ_ResultSet : public ResultSet
         unsigned int findColumn(const char *field) const;
 
         const char *getString(const int idx) const;
-        const int getInteger(const int idx) const;
-        const bool getBool(const int idx) const;
-        const time_t getUnixTime(const int idx) const;
-        const double getDouble(const int idx) const;
-        const float getFloat(const int idx) const;
-        const long getLong(const int idx) const;
-        const short getShort(const int idx) const;
+        int getInteger(const int idx) const;
+        bool getBool(const int idx) const;
+        time_t getUnixTime(const int idx) const;
+        double getDouble(const int idx) const;
+        float getFloat(const int idx) const;
+        long getLong(const int idx) const;
+        short getShort(const int idx) const;
 
         // Overload the new/delete opertors so the object will be
         // created/deleted using the memory allocator associated with the
@@ -64,7 +64,7 @@ class PQ_ResultSet : public ResultSet
 
     private:
         PGresult *res_;
-        unsigned long row_;
+        int row_;
     };
 
     class PQ_Connection : public Connection
@@ -84,7 +84,7 @@ class PQ_ResultSet : public ResultSet
         ResultSet *executeQuery(const char *sql);
         char *escape(const char *);
         const char *unixtimeToSql(const time_t);
-        const unsigned long insertId(void);
+        unsigned long insertId(void);
 
         bool beginTrans(void);
         bool commitTrans(void);

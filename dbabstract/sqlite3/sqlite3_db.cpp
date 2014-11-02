@@ -104,13 +104,13 @@ Sqlite3_ResultSet::getString(const int idx) const
     return ((const char *) sqlite3_column_text(res_, idx));
 }
 
-const int
+int
 Sqlite3_ResultSet::getInteger(const int idx) const
 {
     return ((const int) atoi((const char *) sqlite3_column_text(res_, idx)));
 }
 
-const bool
+bool
 Sqlite3_ResultSet::getBool(const int idx) const
 {
     register const char *v = (const char *) sqlite3_column_text(res_, idx);
@@ -120,7 +120,7 @@ Sqlite3_ResultSet::getBool(const int idx) const
     return (false);
 }
 
-const time_t
+time_t
 Sqlite3_ResultSet::getUnixTime(const int idx) const
 {
     struct tm tmp;
@@ -165,26 +165,26 @@ Sqlite3_ResultSet::getUnixTime(const int idx) const
     return (0);
 }
 
-const double
+double
 Sqlite3_ResultSet::getDouble(const int idx) const
 {
     char *pEnd;
     return (strtod((const char *) sqlite3_column_text(res_, idx), &pEnd));
 }
 
-const float
+float
 Sqlite3_ResultSet::getFloat(const int idx) const
 {
     return (atof((const char *) sqlite3_column_text(res_, idx)));
 }
 
-const long
+long
 Sqlite3_ResultSet::getLong(const int idx) const
 {
     return (atol((const char *) sqlite3_column_text(res_, idx)));
 }
 
-const short
+short
 Sqlite3_ResultSet::getShort(const int idx) const
 {
     return ((short) (atoi((const char *) sqlite3_column_text(res_, idx))));
@@ -291,7 +291,7 @@ Sqlite3_Connection::unixtimeToSql(const time_t val)
     return (buf);
 }
 
-const unsigned long
+unsigned long
 Sqlite3_Connection::insertId(void)
 {
     return ((const unsigned long) sqlite3_last_insert_rowid(db_));

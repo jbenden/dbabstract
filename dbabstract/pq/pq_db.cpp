@@ -91,13 +91,13 @@ PQ_ResultSet::getString(const int idx) const
     return (PQgetvalue(res_, row_, idx));
 }
 
-const int
+int
 PQ_ResultSet::getInteger(const int idx) const
 {
     return ((const int) ::atoi(getString(idx)));
 }
 
-const bool
+bool
 PQ_ResultSet::getBool(const int idx) const
 {
     const char *res = getString(idx);
@@ -107,7 +107,7 @@ PQ_ResultSet::getBool(const int idx) const
     return (false);
 }
 
-const time_t
+time_t
 PQ_ResultSet::getUnixTime(const int idx) const
 {
     struct tm tmp;
@@ -152,7 +152,7 @@ PQ_ResultSet::getUnixTime(const int idx) const
     return (0);
 }
 
-const double
+double
 PQ_ResultSet::getDouble(const int idx) const
 {
     char *pEnd;
@@ -160,21 +160,21 @@ PQ_ResultSet::getDouble(const int idx) const
     return ((res ? strtod(res, &pEnd) : 0));
 }
 
-const float
+float
 PQ_ResultSet::getFloat(const int idx) const
 {
     const char *res = getString(idx);
     return ((res ? atof(res) : 0));
 }
 
-const long
+long
 PQ_ResultSet::getLong(const int idx) const
 {
     const char *res = getString(idx);
     return ((res ? atol(res) : 0L));
 }
 
-const short
+short
 PQ_ResultSet::getShort(const int idx) const
 {
     const char *res = getString(idx);
@@ -277,7 +277,7 @@ PQ_Connection::unixtimeToSql(const time_t val)
     return (buf);
 }
 
-const unsigned long
+unsigned long
 PQ_Connection::insertId(void)
 {
     return (0);

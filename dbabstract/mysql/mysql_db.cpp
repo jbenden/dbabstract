@@ -98,13 +98,13 @@ MySQL_ResultSet::getString(const int idx) const
     return (row_[idx]);
 }
 
-const int
+int
 MySQL_ResultSet::getInteger(const int idx) const
 {
     return ((const int) ::atoi(row_[idx]));
 }
 
-const bool
+bool
 MySQL_ResultSet::getBool(const int idx) const
 {
     if (row_[idx] && row_[idx][0] == '1') {
@@ -113,7 +113,7 @@ MySQL_ResultSet::getBool(const int idx) const
     return (false);
 }
 
-const time_t
+time_t
 MySQL_ResultSet::getUnixTime(const int idx) const
 {
     struct tm tmp;
@@ -157,26 +157,26 @@ MySQL_ResultSet::getUnixTime(const int idx) const
     return (0);
 }
 
-const double
+double
 MySQL_ResultSet::getDouble(const int idx) const
 {
     char *pEnd;
     return ((row_[idx] ? strtod(row_[idx], &pEnd) : 0));
 }
 
-const float
+float
 MySQL_ResultSet::getFloat(const int idx) const
 {
     return ((row_[idx] ? atof(row_[idx]) : 0));
 }
 
-const long
+long
 MySQL_ResultSet::getLong(const int idx) const
 {
     return ((row_[idx] ? atol(row_[idx]) : 0L));
 }
 
-const short
+short
 MySQL_ResultSet::getShort(const int idx) const
 {
     return ((short) (row_[idx] ? atoi(row_[idx]) : 0));
@@ -286,7 +286,7 @@ MySQL_Connection::unixtimeToSql(const time_t val)
     return (buf);
 }
 
-const unsigned long
+unsigned long
 MySQL_Connection::insertId(void)
 {
     return ((const unsigned long) mysql_insert_id(mysql_));
