@@ -14,9 +14,12 @@ coverage*
 *.gcno
 sqlite3_test
 CMakeFiles
-*.cmake
 Doxyfile
 doc/html
 CMakeCache.txt
 test/test_db
 .vagrant
+cmake_install.cmake
+libs
+static
+test/CTestTestfile.cmake

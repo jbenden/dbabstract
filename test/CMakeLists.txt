@@ -27,7 +27,7 @@ endif()
 if (PQ_FOUND)
     target_link_libraries(test_db pq_dba_static)
 endif()
-add_test(NAME mytest COMMAND test_db)
+add_test(NAME coverage COMMAND test_db static)
 #install(TARGETS test_db DESTINATION bin)
 
 #endif()
