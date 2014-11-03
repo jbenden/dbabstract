@@ -14,11 +14,29 @@ extern "C" {
     extern DB::Connection *create_pq_connection(void);
 };
 
+class PqInvalidTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() {
+            connection = create_pq_connection();
+            connection->open("host = 127.0.0.1 dbname = postgres1", NULL, 0, NULL, NULL);
+        }
+
+        virtual void TearDown() {
+            connection->release();
+        }
+
+        Poco::AutoPtr <DB::Connection> connection;
+};
+
+TEST_F(PqInvalidTest, CannotConnectToDatabase) {
+    ASSERT_EQ(connection->isConnected(), false);
+}
+
 class PqDefaultTest : public ::testing::Test {
     protected:
         virtual void SetUp() {
             connection = create_pq_connection();
-            connection->open("host = 127.0.0.1 dbname = postgres", NULL, 0, NULL, NULL);
+            EXPECT_EQ(connection->open("host = 127.0.0.1 dbname = postgres", NULL, 0, NULL, NULL), true);
         }
 
         virtual void TearDown() {

@@ -14,6 +14,24 @@ extern "C" {
     extern DB::Connection *create_mysql_connection(void);
 };
 
+class InvalidTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() {
+            connection = create_mysql_connection();
+            connection->open("localhost", "cdnsicndsio", 0, NULL, NULL);
+        }
+
+        virtual void TearDown() {
+            connection->release();
+        }
+
+        Poco::AutoPtr <DB::Connection> connection;
+};
+
+TEST_F(InvalidTest, CannotConnectToDatabase) {
+    ASSERT_EQ(connection->isConnected(), false);
+}
+
 class DefaultTest : public ::testing::Test {
     protected:
         virtual void SetUp() {

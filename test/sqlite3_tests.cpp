@@ -14,6 +14,24 @@ extern "C" {
     extern DB::Connection *create_sqlite3_connection(void);
 };
 
+class SqliteInvalidTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() {
+            connection = create_sqlite3_connection();
+            connection->open(".", NULL, 0, NULL, NULL);
+        }
+
+        virtual void TearDown() {
+            connection->release();
+        }
+
+        Poco::AutoPtr <DB::Connection> connection;
+};
+
+TEST_F(SqliteInvalidTest, CannotConnectToDatabase) {
+    ASSERT_EQ(connection->isConnected(), false);
+}
+
 class SqliteDefaultTest : public ::testing::Test {
     protected:
         virtual void SetUp() {
