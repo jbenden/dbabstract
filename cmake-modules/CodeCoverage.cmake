@@ -107,13 +107,17 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 		
 		# Cleanup lcov
 		${LCOV_PATH} --directory . --zerocounters
-		
+
 		# Run tests
 		COMMAND ${_testrunner} ${ARGV3}
-		
+
 		# Capturing lcov counters and generating report
 		COMMAND ${LCOV_PATH} --directory . --capture --output-file ${_outputname}.info
-		COMMAND ${LCOV_PATH} --remove ${_outputname}.info 'tests/*' '/usr/*' --output-file ${_outputname}.info.cleaned
+		COMMAND ${LCOV_PATH} --remove ${_outputname}.info 'test/*' '/usr/*' --output-file ${_outputname}.info.cleaned
+
+		# Upload to coveralls.io
+		COMMAND cpp-coveralls -b ${CMAKE_CURRENT_BINARY_DIR} -i ${CMAKE_SOURCE_DIR}/dbabstract/mysql  -i ${CMAKE_SOURCE_DIR}/dbabstract/sqlite3 -i ${CMAKE_SOURCE_DIR}/dbabstract/pq -y .coveralls.yml
+
 		COMMAND ${GENHTML_PATH} -o ${_outputname} ${_outputname}.info.cleaned
 		COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
 		
