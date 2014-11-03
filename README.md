@@ -10,7 +10,7 @@ For information about usage, consult the class reference available
 in the doc directory (if you have Doxygen) or view the online one
 available at Thralling Penguin's website.
 
-There is an article at [http://benden.us/](http://benden.us/) about DBAbstract. Doxygen documentation for the original version is available [here](http://www.thrallingpenguin.com/resources/dbabstract/).
+There is an article at [http://benden.us/](http://benden.us/journal/2014/dbabstract-a-database-abstraction-library-for-cpp/) about DBAbstract. Doxygen documentation for the original version is available [here](http://www.thrallingpenguin.com/resources/dbabstract/).
 
 Building On OS X
 ----------------
