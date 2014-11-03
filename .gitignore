@@ -23,3 +23,5 @@ cmake_install.cmake
 libs
 static
 test/CTestTestfile.cmake
+.coveralls.yml
+test.db
