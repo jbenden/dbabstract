@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/jbenden/dbabstract.svg?style=flat&branch=master)](https://travis-ci.org/jbenden/dbabstract)
+[![Coverage Status](https://coveralls.io/repos/jbenden/dbabstract/badge.png?branch=master)](https://coveralls.io/r/jbenden/dbabstract?branch=master)
 A database abstraction layer for C++ and POCO framework
 =======================================================
  
