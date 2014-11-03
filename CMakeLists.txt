@@ -6,9 +6,12 @@ option(coverage "Build with coverage support." OFF)
 #cmake_policy(SET CMP0042 NEW)
 
 project (dbabstract)
+set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/gtest-1.7.0")
 set(CMAKE_CXX_FLAGS "-g -Wall -I${CMAKE_SOURCE_DIR}/dbabstract")
 set(ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs")
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+
+add_subdirectory(gtest-1.7.0)
 
 include(CodeCoverage)
 if (coverage)
