@@ -117,6 +117,7 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 
 		# Upload to coveralls.io
 		COMMAND cpp-coveralls -b ${CMAKE_CURRENT_BINARY_DIR} -i ${CMAKE_SOURCE_DIR}/dbabstract/mysql  -i ${CMAKE_SOURCE_DIR}/dbabstract/sqlite3 -i ${CMAKE_SOURCE_DIR}/dbabstract/pq -y .coveralls.yml
+		COMMAND find . -name '*.gcov' -exec rm {} +
 
 		COMMAND ${GENHTML_PATH} -o ${_outputname} ${_outputname}.info.cleaned
 		COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
