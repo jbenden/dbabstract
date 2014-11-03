@@ -95,7 +95,7 @@ namespace DB
     class Connection
     {
     public:
-        Connection(void) : ref(0) {};
+        Connection(void) : ref(1) {};
         virtual ~Connection(void) {};
 
         /**
