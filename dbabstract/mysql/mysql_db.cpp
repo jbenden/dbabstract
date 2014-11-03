@@ -33,9 +33,6 @@ namespace DB
 
 MySQL_ResultSet::~MySQL_ResultSet()
 {
-    if (res_) {
-        std::cerr << "Warning ResultSet wasn't closed or deleted." << std::endl;
-    }
 }
 
 bool
