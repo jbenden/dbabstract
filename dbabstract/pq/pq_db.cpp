@@ -201,6 +201,9 @@ PQ_Connection::open(const char *database, const char *host, const int port, cons
     pgconn_ = PQconnectdb(database);
     database_ = database;
     if (PQstatus(pgconn_) != CONNECTION_OK) {
+        if (pgconn_)
+            PQfinish(pgconn_);    
+        pgconn_ = false;
         return (false);
     }
     return (true);
@@ -219,7 +222,7 @@ bool
 PQ_Connection::isConnected(void)
 {
     if (!pgconn_) return (false);
-    return ((PQping(database_.c_str()) == 0 ? true : false));
+    return ((PQping(database_.c_str()) == PQPING_OK ? true : false));
 }
 
 bool
