@@ -51,7 +51,7 @@ TEST_F(SqliteDefaultTest, CanConnectToDatabase) {
 }
 
 TEST_F(SqliteDefaultTest, CanExecuteSimpleQuery) {
-    EXPECT_EQ(connection->execute("CREATE TABLE testing (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `text` VARCHAR(128), num INTEGER, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP)"), true);
+    EXPECT_EQ(connection->execute("CREATE TABLE testing (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, text VARCHAR(128), num INTEGER, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP)"), true);
     EXPECT_EQ(connection->execute("DROP TABLE testing"), true);
 }
 
