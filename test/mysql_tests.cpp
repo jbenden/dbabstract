@@ -75,7 +75,7 @@ TEST_F(DefaultTest, CanConnectToDatabase) {
 }
 
 TEST_F(DefaultTest, CanExecuteSimpleQuery) {
-    EXPECT_EQ(connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn) ENGINE=InnoDB"), true);
+    EXPECT_EQ(connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP) ENGINE=InnoDB"), true);
     EXPECT_EQ(connection->execute("DROP TABLE testing"), true);
 }
 
