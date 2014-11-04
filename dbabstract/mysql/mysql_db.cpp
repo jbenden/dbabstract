@@ -115,7 +115,7 @@ MySQL_ResultSet::getUnixTime(const int idx) const
 {
     struct tm tmp;
 
-    if (row_[idx]) {
+    if (row_[idx] && strlen(row_[idx])>=14) {
         // switch on the type of field
         // Basically, there are two types of returns I've seen
         // 1. has a hyphen and is fully parseable
