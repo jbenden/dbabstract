@@ -12,4 +12,5 @@ install:
 script:
   - make
   - sudo make install
-  - ./test/tests
+  - ./test/test_db
+  - ./test/test_db static
