@@ -111,7 +111,7 @@ TEST_F(SqliteTransactionTest, SingleSelect) {
     EXPECT_EQ(connection->beginTrans(), true);
 
     DB::Query q(*connection);
-    q << "SELECT * FROM testing;";
+    q << "SELECT * FROM testing";
     DB::ResultSet *rs = connection->executeQuery(q.str());
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
     rs->next();
