@@ -107,12 +107,9 @@ TEST_F(SqliteTransactionTest, SingleInsert) {
 
 TEST_F(SqliteTransactionTest, SingleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
-    EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
-    //EXPECT_EQ(connection->commitTrans(), true);
+    EXPECT_EQ(connection->commitTrans(), true);
 
-    DB::Query q(*connection);
-    q << "SELECT * FROM testing;";
-    DB::ResultSet *rs = connection->executeQuery(q.str());
+    DB::ResultSet *rs = connection->executeQuery("SELECT * FROM testing;");
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
     if (rs) {
     rs->next();
@@ -172,6 +169,7 @@ TEST_F(SqliteTransactionTest, QueryString) {
     q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
     q << "," << 42.0f << ");";
     EXPECT_EQ(connection->execute(q.str()), true);
+    std::cout << q.str() << std::endl;
     std::cout << connection->errormsg() << std::endl;
     unsigned long id = connection->insertId();
     EXPECT_EQ(id, 1);
