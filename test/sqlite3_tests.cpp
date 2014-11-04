@@ -166,7 +166,7 @@ TEST_F(SqliteTransactionTest, QueryString) {
     DB::Query q(*connection);
     q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
     q << "," << 42.0f << ");";
-    EXPECT_EQ(connection->execute(q.str()), true);
+    EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42.0);"), true);
     std::cout << q.str() << std::endl;
     std::cout << connection->errormsg() << std::endl;
     unsigned long id = connection->insertId();
