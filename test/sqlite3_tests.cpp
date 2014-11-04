@@ -114,6 +114,7 @@ TEST_F(SqliteTransactionTest, SingleSelect) {
     q << "SELECT * FROM testing";
     DB::ResultSet *rs = connection->executeQuery(q.str());
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    if (rs) {
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
     EXPECT_STREQ(rs->getString(1), "benden");
@@ -129,6 +130,7 @@ TEST_F(SqliteTransactionTest, SingleSelect) {
     EXPECT_EQ(rs->getUnixTime(5), 0);
     EXPECT_EQ(rs->recordCount(), 0);
     rs->close();
+    }
 }
 
 TEST_F(SqliteTransactionTest, DoubleSelect) {
@@ -140,6 +142,7 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
     q << "SELECT * FROM testing;";
     DB::ResultSet *rs = connection->executeQuery(q.str());
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    if (rs) {
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
     EXPECT_STREQ(rs->getString(1), "benden");
@@ -154,6 +157,7 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
     EXPECT_NE(rs->getUnixTime(4), -1);
     EXPECT_EQ(rs->getUnixTime(5), 0);
     rs->close();
+    }
 }
 
 TEST_F(SqliteTransactionTest, QueryString) {
