@@ -137,6 +137,7 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
 
     DB::Query q(*connection);
     q << "SELECT * FROM testing;";
+    std::cout << "'" << q.str() << "'" << std::endl;
     DB::ResultSet *rs = connection->executeQuery(q.str());
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
     if (rs) {
