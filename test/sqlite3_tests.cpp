@@ -158,12 +158,12 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
 }
 
 TEST_F(SqliteTransactionTest, QueryString) {
-    connection->setTransactionMode(DB::Connection::READ_UNCOMMITTED);
-    connection->setTransactionMode(DB::Connection::READ_COMMITTED);
-    connection->setTransactionMode(DB::Connection::REPEATABLE_READ);
-    connection->setTransactionMode(DB::Connection::SERIALIZABLE);
+    EXPECT_EQ(connection->setTransactionMode(DB::Connection::READ_UNCOMMITTED), true);
+    EXPECT_EQ(connection->setTransactionMode(DB::Connection::READ_COMMITTED), true);
+    EXPECT_EQ(connection->setTransactionMode(DB::Connection::REPEATABLE_READ), true);
+    EXPECT_EQ(connection->setTransactionMode(DB::Connection::SERIALIZABLE), true);
 
-    connection->beginTrans();
+    EXPECT_EQ(connection->beginTrans(), true);
 
     DB::Query q(*connection);
     q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
