@@ -241,6 +241,8 @@ namespace DB
          */
         virtual const char *version(void) const = 0;
 
+#ifndef STATIC
+
         typedef Connection* (*Connection_Creator) (void);
 
         /**
@@ -274,6 +276,8 @@ namespace DB
                 return (NULL);
             }
         }
+
+#endif
 
         void duplicate() {
             ref++;

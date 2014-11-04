@@ -123,7 +123,7 @@ Sqlite3_ResultSet::getUnixTime(const int idx) const
     struct tm tmp;
     register const char *v = (const char *) sqlite3_column_text(res_, idx);
 
-    if (v) {
+    if (v && strlen(v)>=14) {
         // switch on the type of field
         // Basically, there are two types of returns I've seen
         // 1. has a hyphen and is fully parseable
