@@ -322,16 +322,12 @@ Sqlite3_Connection::setTransactionMode(const enum TRANS_MODE mode)
 
     switch (mode) {
     case READ_UNCOMMITTED:
-        sql = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-        break;
     case READ_COMMITTED:
-        sql = "SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED";
-        break;
     case REPEATABLE_READ:
-        sql = "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ";
+        sql = "PRAGMA read_uncommitted = true";
         break;
     case SERIALIZABLE:
-        sql = "SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE";
+        sql = "PRAGMA read_uncommitted = false";
         break;
     }
     return (execute(sql));
