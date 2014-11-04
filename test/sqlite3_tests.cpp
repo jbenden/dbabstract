@@ -165,6 +165,8 @@ TEST_F(SqliteTransactionTest, QueryString) {
     connection->setTransactionMode(DB::Connection::REPEATABLE_READ);
     connection->setTransactionMode(DB::Connection::SERIALIZABLE);
 
+    connection->beginTrans();
+
     DB::Query q(*connection);
     q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
     q << "," << 42.0f << ");";
