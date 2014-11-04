@@ -151,7 +151,6 @@ TEST_F(TransactionTest, SingleSelect) {
     EXPECT_EQ(rs->getBool(3), false);
     EXPECT_EQ(rs->getShort(3), (short) 42);
     EXPECT_NE(rs->getUnixTime(4), -1);
-    EXPECT_EQ(rs->getUnixTime(5), -1);
     EXPECT_EQ(rs->recordCount(), 1);
     rs->close();
 }
@@ -177,7 +176,6 @@ TEST_F(TransactionTest, DoubleSelect) {
     EXPECT_EQ(rs->getBool(3), true);
     EXPECT_EQ(rs->getShort(3), (short) 1);
     EXPECT_NE(rs->getUnixTime(4), -1);
-    EXPECT_EQ(rs->getUnixTime(5), -1);
     EXPECT_EQ(rs->getUnixTime(1), 0);
     rs->close();
 }
