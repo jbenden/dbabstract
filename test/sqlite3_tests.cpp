@@ -163,7 +163,7 @@ TEST_F(SqliteTransactionTest, QueryString) {
     EXPECT_EQ(connection->setTransactionMode(DB::Connection::REPEATABLE_READ), true);
     EXPECT_EQ(connection->setTransactionMode(DB::Connection::SERIALIZABLE), true);
 
-    EXPECT_EQ(connection->beginTrans(), true);
+    EXPECT_EQ(connection->beginTrans(), false);
 
     DB::Query q(*connection);
     q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
