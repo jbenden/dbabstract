@@ -75,7 +75,7 @@ TEST_F(DefaultTest, CanConnectToDatabase) {
 }
 
 TEST_F(DefaultTest, CanExecuteSimpleQuery) {
-    EXPECT_EQ(connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP) ENGINE=InnoDB"), true);
+    EXPECT_EQ(connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP DEFAULT NULL) ENGINE=InnoDB"), true);
     EXPECT_EQ(connection->execute("DROP TABLE testing"), true);
 }
 
@@ -112,7 +112,7 @@ class TransactionTest : public ::testing::Test {
             connection = create_mysql_connection();
             connection->open("test", "127.0.0.1", 3306, "root", "");
             connection->execute("set time_zone='+0:00'");
-            connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP) ENGINE=InnoDB");
+            connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP DEFAULT NULL) ENGINE=InnoDB");
             connection->beginTrans();
         }
 
