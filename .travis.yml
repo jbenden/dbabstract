@@ -8,10 +8,8 @@ before_install:
   - sudo apt-get install libpoco-dev
   - mysql -u root -e 'create database test;'
 install: 
-  - cd gtest-1.7.0; cmake .; make; cd ..
   - cmake -DPQ_FOUND=FALSE .
 script:
   - make
   - sudo make install
-  - ./test/test_db
-  - ./test/test_db static
+  - ./test/tests
