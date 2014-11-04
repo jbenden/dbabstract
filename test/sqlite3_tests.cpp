@@ -135,10 +135,7 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',1)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    DB::Query q(*connection);
-    q << "SELECT * FROM testing;";
-    std::cout << "'" << q.str() << "'" << std::endl;
-    DB::ResultSet *rs = connection->executeQuery(q.str());
+    DB::ResultSet *rs = connection->executeQuery("SELECT * FROM testing");
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
     if (rs) {
     rs->next();
