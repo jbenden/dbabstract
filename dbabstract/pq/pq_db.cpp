@@ -340,8 +340,6 @@ PQ_Connection::setTransactionMode(const enum TRANS_MODE mode)
     case SERIALIZABLE:
         sql = "SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE";
         break;
-    default:
-        return false;
     }
     return (execute(sql));
 }
