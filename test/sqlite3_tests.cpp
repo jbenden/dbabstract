@@ -87,7 +87,7 @@ class SqliteTransactionTest : public ::testing::Test {
         virtual void SetUp() {
             connection = create_sqlite3_connection();
             connection->open("test.db", NULL, 0, NULL, NULL);
-            connection->execute("CREATE TABLE testing (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, text VARCHAR(128), num INTEGER, fl FLOAT, createdOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updatedOn TIMESTAMP)");
+            EXPECT_EQ(connection->execute("CREATE TABLE testing (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, text VARCHAR(128), num INTEGER, fl FLOAT, createdOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updatedOn TIMESTAMP)"), true);
             connection->beginTrans();
         }
 
