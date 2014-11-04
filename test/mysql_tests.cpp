@@ -60,6 +60,7 @@ class DefaultTest : public ::testing::Test {
         virtual void SetUp() {
             connection = create_mysql_connection();
             connection->open("test", "127.0.0.1", 3306, "root", "");
+            connection->execute("set time_zone='+0:00'");
         }
 
         virtual void TearDown() {
@@ -88,7 +89,7 @@ TEST_F(DefaultTest, EscapeCharacters) {
 
 TEST_F(DefaultTest, UnixTimeToSQL) {
     const char *t = connection->unixtimeToSql((time_t) 1414965631);
-    EXPECT_STREQ(t, "'2014-11-02 15:00:31'");
+    EXPECT_STREQ(t, "'2014-11-02 22:00:31'");
 }
 
 TEST_F(DefaultTest, ErrorNumberAndMessage) {
@@ -110,6 +111,7 @@ class TransactionTest : public ::testing::Test {
         virtual void SetUp() {
             connection = create_mysql_connection();
             connection->open("test", "127.0.0.1", 3306, "root", "");
+            connection->execute("set time_zone='+0:00'");
             connection->execute("CREATE TABLE testing (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, text VARCHAR(128), num INT, fl FLOAT, createdOn TIMESTAMP, updatedOn TIMESTAMP) ENGINE=InnoDB");
             connection->beginTrans();
         }

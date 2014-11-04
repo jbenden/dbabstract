@@ -65,7 +65,7 @@ TEST_F(SqliteDefaultTest, EscapeCharacters) {
 
 TEST_F(SqliteDefaultTest, UnixTimeToSQL) {
     const char *t = connection->unixtimeToSql((time_t) 1414965631);
-    EXPECT_STREQ(t, "'2014-11-02 15:00:31'");
+    EXPECT_STREQ(t, "'2014-11-02 22:00:31'");
 }
 
 TEST_F(SqliteDefaultTest, ErrorNumberAndMessage) {

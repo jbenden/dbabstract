@@ -276,7 +276,7 @@ MySQL_Connection::unixtimeToSql(const time_t val)
     char *buf = new char[22];
     struct tm *tmp = new struct tm;
     buf[0] = '\'';
-    strftime(buf+1, 20, "%Y-%m-%d %H:%M:%S", localtime_r(&val, tmp));
+    strftime(buf+1, 20, "%Y-%m-%d %H:%M:%S", gmtime_r(&val, tmp));
     buf[20] = '\'';
     buf[21] = 0;
     delete tmp;
