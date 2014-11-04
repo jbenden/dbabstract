@@ -107,11 +107,10 @@ TEST_F(SqliteTransactionTest, SingleInsert) {
 
 TEST_F(SqliteTransactionTest, SingleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
-    EXPECT_EQ(connection->commitTrans(), true);
-    EXPECT_EQ(connection->beginTrans(), true);
+    //EXPECT_EQ(connection->commitTrans(), true);
 
     DB::Query q(*connection);
-    q << "SELECT * FROM testing";
+    q << "SELECT * FROM testing;";
     DB::ResultSet *rs = connection->executeQuery(q.str());
     EXPECT_NE(rs, (DB::ResultSet *) NULL);
     if (rs) {
