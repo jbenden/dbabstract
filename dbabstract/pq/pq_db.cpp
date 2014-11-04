@@ -31,9 +31,6 @@ namespace DB
 
 PQ_ResultSet::~PQ_ResultSet()
 {
-    if (res_) {
-        std::cerr << "Warning ResultSet wasn't closed or deleted." << std::endl;
-    }
 }
 
 bool
@@ -113,7 +110,7 @@ PQ_ResultSet::getUnixTime(const int idx) const
     struct tm tmp;
 
     const char *res = getString(idx);
-    if (res) {
+    if (res && strlen(res) >= 14) {
         // switch on the type of field
         // Basically, there are two types of returns I've seen
         // 1. has a hyphen and is fully parseable

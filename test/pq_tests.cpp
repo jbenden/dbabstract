@@ -32,6 +32,29 @@ TEST_F(PqInvalidTest, CannotConnectToDatabase) {
     ASSERT_EQ(connection->isConnected(), false);
 }
 
+class PqInvalid2Test : public ::testing::Test {
+    protected:
+        virtual void SetUp() {
+            connection = create_pq_connection();
+            ASSERT_EQ(connection->open("host=127.0.0.1 dbname=postgres2", NULL, 0, NULL, NULL), false);
+        }
+
+        virtual void TearDown() {
+            connection->release();
+        }
+
+        Poco::AutoPtr <DB::Connection> connection;
+};
+
+TEST_F(PqInvalid2Test, CannotConnectToDatabase) {
+    ASSERT_EQ(connection->isConnected(), false);
+}
+
+TEST_F(PqInvalid2Test, BadQuery) {
+    ASSERT_EQ(connection->executeQuery("SELECT sjot frm fs"), (DB::ResultSet*)NULL);
+    ASSERT_EQ(connection->executeQuery("BEGIN"), (DB::ResultSet*)NULL);
+}
+
 class PqDefaultTest : public ::testing::Test {
     protected:
         virtual void SetUp() {
@@ -125,11 +148,36 @@ TEST_F(PqTransactionTest, SingleSelect) {
     EXPECT_EQ(rs->getBool(3), false);
     EXPECT_EQ(rs->getShort(3), (short) 42);
     EXPECT_NE(rs->getUnixTime(4), -1);
-    EXPECT_EQ(rs->getUnixTime(5), -1);
+    EXPECT_EQ(rs->getUnixTime(5), 0);
     EXPECT_EQ(rs->recordCount(), 1);
     rs->close();
 }
 
+TEST_F(PqTransactionTest, DoubleSelect) {
+    EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',1)"), true);
+    EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',1)"), true);
+    EXPECT_EQ(connection->commitTrans(), true);
+
+    DB::Query q(*connection);
+    q << "SELECT * FROM testing;";
+    DB::ResultSet *rs = connection->executeQuery(q.str());
+    EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    rs->next();
+    EXPECT_EQ(rs->findColumn("text"), 1);
+    EXPECT_STREQ(rs->getString(1), "benden");
+    EXPECT_EQ(rs->findColumn("fl"), 3);
+    EXPECT_EQ(rs->findColumn("r"), 6);
+    EXPECT_EQ(rs->getInteger(3), 1);
+    EXPECT_EQ(rs->getFloat(3), 1.0f);
+    EXPECT_EQ(rs->getDouble(3), 1.0F);
+    EXPECT_EQ(rs->getLong(3), 1l);
+    EXPECT_EQ(rs->getBool(3), true);
+    EXPECT_EQ(rs->getShort(3), (short) 1);
+    EXPECT_NE(rs->getUnixTime(4), -1);
+    EXPECT_EQ(rs->getUnixTime(5), 0);
+    EXPECT_EQ(rs->getUnixTime(1), 0);
+    rs->close();
+}
 TEST_F(PqTransactionTest, QueryString) {
     connection->setTransactionMode(DB::Connection::READ_UNCOMMITTED);
     connection->setTransactionMode(DB::Connection::READ_COMMITTED);
