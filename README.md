@@ -13,8 +13,8 @@ available at Thralling Penguin's website.
 
 There is an article at [http://benden.us/](http://benden.us/journal/2014/dbabstract-a-database-abstraction-library-for-cpp/) about DBAbstract. Doxygen documentation for the original version is available [here](http://www.thrallingpenguin.com/resources/dbabstract/).
 
-Building On OS X
-----------------
+Building On OS X/Linux
+----------------------
 
 As a requirement to building you must have Homebrew and the following
 modules installed:
@@ -31,5 +31,5 @@ Then inside a git checkout of this project, do the following:
     $ cmake .
     $ make
     $ make install
-    $ /usr/local/bin/test_db
+    $ ./src/test_db  or ./src/tests
 
