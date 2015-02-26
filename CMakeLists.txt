@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8.7)
 
 option(test "Build all tests." ON)
+option(docs "Build all docs." ON)
 option(coverage "Build with coverage support." OFF)
 
 #cmake_policy(SET CMP0042 NEW)
@@ -11,7 +12,9 @@ set(CMAKE_CXX_FLAGS "-g -Wall -I${CMAKE_SOURCE_DIR}")
 set(ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs")
 SET(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake-modules")
 
+if (tests)
 add_subdirectory(gtest-1.7.0)
+endif()
 
 include(CodeCoverage)
 if (coverage)
@@ -22,5 +25,9 @@ if (coverage)
 endif()
 
 add_subdirectory(dbabstract)
+if (docs)
 add_subdirectory(doc)
+endif()
+if (test)
 add_subdirectory(test)
+endif()
