@@ -450,7 +450,7 @@ namespace dbabstract
                 return qstr_impl(Out, q.s.c_str());
         }
     };
-}
+}; /* namespace */
 
 #endif
 

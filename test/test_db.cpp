@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#include "db.h"
+#include "dbabstract/db.h"
 
 #include <Poco/SharedLibrary.h>
 #include <Poco/AutoPtr.h>
@@ -25,7 +25,7 @@
 #include <iostream>
 #include <string>
 
-using namespace dbastract;
+using namespace dbabstract;
 
 typedef Connection* (*Connection_Creator) (void);
 

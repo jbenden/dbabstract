@@ -6,7 +6,7 @@
 #include <string>
 #include <strstream>
 
-#include "db.h"
+#include "dbabstract/db.h"
 
 #ifdef ENABLE_SQLITE3
 

@@ -7,7 +7,7 @@ option(coverage "Build with coverage support." OFF)
 
 project (dbabstract)
 set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/gtest-1.7.0")
-set(CMAKE_CXX_FLAGS "-g -Wall -I${CMAKE_SOURCE_DIR}/dbabstract")
+set(CMAKE_CXX_FLAGS "-g -Wall -I${CMAKE_SOURCE_DIR}")
 set(ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs")
 SET(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake-modules")
 
