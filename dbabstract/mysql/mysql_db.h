@@ -20,10 +20,10 @@
 #include <fstream>
 #include <iomanip>
 
-#include "db.h"
+#include "dbabstract/db.h"
 #include "mysql/mysql.h"
 
-namespace DB
+namespace dbabstract
 {
     class MySQL_Connection;
 

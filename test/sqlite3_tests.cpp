@@ -11,7 +11,7 @@
 #ifdef ENABLE_SQLITE3
 
 extern "C" {
-    extern DB::Connection *create_sqlite3_connection(void);
+    extern dbabstract::Connection *create_sqlite3_connection(void);
 };
 
 class SqliteInvalidTest : public ::testing::Test {
@@ -25,7 +25,7 @@ class SqliteInvalidTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(SqliteInvalidTest, CannotConnectToDatabase) {
@@ -43,7 +43,7 @@ class SqliteDefaultTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(SqliteDefaultTest, CanConnectToDatabase) {
@@ -98,7 +98,7 @@ class SqliteTransactionTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(SqliteTransactionTest, SingleInsert) {
@@ -109,8 +109,8 @@ TEST_F(SqliteTransactionTest, SingleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    DB::ResultSet *rs = connection->executeQuery("SELECT * FROM testing;");
-    EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    dbabstract::ResultSet *rs = connection->executeQuery("SELECT * FROM testing;");
+    EXPECT_NE(rs, (dbabstract::ResultSet *) NULL);
     if (rs) {
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
@@ -135,8 +135,8 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',1)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    DB::ResultSet *rs = connection->executeQuery("SELECT * FROM testing");
-    EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    dbabstract::ResultSet *rs = connection->executeQuery("SELECT * FROM testing");
+    EXPECT_NE(rs, (dbabstract::ResultSet *) NULL);
     if (rs) {
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
@@ -156,15 +156,15 @@ TEST_F(SqliteTransactionTest, DoubleSelect) {
 }
 
 TEST_F(SqliteTransactionTest, QueryString) {
-    EXPECT_EQ(connection->setTransactionMode(DB::Connection::READ_UNCOMMITTED), true);
-    EXPECT_EQ(connection->setTransactionMode(DB::Connection::READ_COMMITTED), true);
-    EXPECT_EQ(connection->setTransactionMode(DB::Connection::REPEATABLE_READ), true);
-    EXPECT_EQ(connection->setTransactionMode(DB::Connection::SERIALIZABLE), true);
+    EXPECT_EQ(connection->setTransactionMode(dbabstract::Connection::READ_UNCOMMITTED), true);
+    EXPECT_EQ(connection->setTransactionMode(dbabstract::Connection::READ_COMMITTED), true);
+    EXPECT_EQ(connection->setTransactionMode(dbabstract::Connection::REPEATABLE_READ), true);
+    EXPECT_EQ(connection->setTransactionMode(dbabstract::Connection::SERIALIZABLE), true);
 
     EXPECT_EQ(connection->beginTrans(), false);
 
-    DB::Query q(*connection);
-    q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
+    dbabstract::Query q(*connection);
+    q << "INSERT INTO testing (text,fl) VALUES (" << dbabstract::qstr("benden");
     q << "," << 42.0f << ");";
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42.0);"), true);
     std::cout << q.str() << std::endl;
@@ -180,15 +180,15 @@ TEST_F(SqliteTransactionTest, RollbackTransaction) {
 }
 
 TEST_F(SqliteTransactionTest, QueryStringTypes) {
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
 
     q << "INSERT INTO test (text,fl,updatedOn) VALUES (";
-    q << DB::qstr("benden") << "," << 42l << "," << DB::unixtime(time(NULL)) << ");";
+    q << dbabstract::qstr("benden") << "," << 42l << "," << dbabstract::unixtime(time(NULL)) << ");";
     EXPECT_EQ(strlen(q.str()), 80);
 }
 
 TEST_F(SqliteTransactionTest, QueryStringTypes2) {
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
     std::stringstream world;
     world << " World" << std::ends;
 
@@ -198,7 +198,7 @@ TEST_F(SqliteTransactionTest, QueryStringTypes2) {
 }
 
 TEST_F(SqliteTransactionTest, QueryNumberTypes) {
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
     double d = 42.2;
     short s = 42;
     unsigned short su = 42;

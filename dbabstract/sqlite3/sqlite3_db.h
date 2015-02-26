@@ -21,11 +21,11 @@
 #include <iomanip>
 #include <iostream>
 
-#include "db.h"
+#include "dbabstract/db.h"
 
 #include "sqlite3.h"
 
-namespace DB
+namespace dbabstract
 {
     class Sqlite3_Connection;
 

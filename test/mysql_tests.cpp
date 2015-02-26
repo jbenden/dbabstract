@@ -11,7 +11,7 @@
 #ifdef ENABLE_MYSQL
 
 extern "C" {
-    extern DB::Connection *create_mysql_connection(void);
+    extern dbabstract::Connection *create_mysql_connection(void);
 };
 
 class InvalidTest : public ::testing::Test {
@@ -25,7 +25,7 @@ class InvalidTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(InvalidTest, CannotConnectToDatabase) {
@@ -43,7 +43,7 @@ class Invalid2Test : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(Invalid2Test, CannotConnectToDatabase) {
@@ -51,8 +51,8 @@ TEST_F(Invalid2Test, CannotConnectToDatabase) {
 }
 
 TEST_F(Invalid2Test, BadQuery) {
-    ASSERT_EQ(connection->executeQuery("SELECT sjot frm fs"), (DB::ResultSet*)NULL);
-    ASSERT_EQ(connection->executeQuery("SET AUTOCOMMIT = 0"), (DB::ResultSet*)NULL);
+    ASSERT_EQ(connection->executeQuery("SELECT sjot frm fs"), (dbabstract::ResultSet*)NULL);
+    ASSERT_EQ(connection->executeQuery("SET AUTOCOMMIT = 0"), (dbabstract::ResultSet*)NULL);
 }
 
 class DefaultTest : public ::testing::Test {
@@ -67,7 +67,7 @@ class DefaultTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(DefaultTest, CanConnectToDatabase) {
@@ -123,7 +123,7 @@ class TransactionTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <DB::Connection> connection;
+        Poco::AutoPtr <dbabstract::Connection> connection;
 };
 
 TEST_F(TransactionTest, SingleInsert) {
@@ -135,10 +135,10 @@ TEST_F(TransactionTest, SingleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
     q << "SELECT * FROM testing;";
-    DB::ResultSet *rs = connection->executeQuery(q.str());
-    EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    dbabstract::ResultSet *rs = connection->executeQuery(q.str());
+    EXPECT_NE(rs, (dbabstract::ResultSet *) NULL);
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
     EXPECT_STREQ(rs->getString(1), "benden");
@@ -160,10 +160,10 @@ TEST_F(TransactionTest, DoubleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
     q << "SELECT * FROM testing;";
-    DB::ResultSet *rs = connection->executeQuery(q.str());
-    EXPECT_NE(rs, (DB::ResultSet *) NULL);
+    dbabstract::ResultSet *rs = connection->executeQuery(q.str());
+    EXPECT_NE(rs, (dbabstract::ResultSet *) NULL);
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
     EXPECT_STREQ(rs->getString(1), "benden");
@@ -181,13 +181,13 @@ TEST_F(TransactionTest, DoubleSelect) {
 }
 
 TEST_F(TransactionTest, QueryString) {
-    connection->setTransactionMode(DB::Connection::READ_UNCOMMITTED);
-    connection->setTransactionMode(DB::Connection::READ_COMMITTED);
-    connection->setTransactionMode(DB::Connection::REPEATABLE_READ);
-    connection->setTransactionMode(DB::Connection::SERIALIZABLE);
+    connection->setTransactionMode(dbabstract::Connection::READ_UNCOMMITTED);
+    connection->setTransactionMode(dbabstract::Connection::READ_COMMITTED);
+    connection->setTransactionMode(dbabstract::Connection::REPEATABLE_READ);
+    connection->setTransactionMode(dbabstract::Connection::SERIALIZABLE);
 
-    DB::Query q(*connection);
-    q << "INSERT INTO testing (text,fl) VALUES (" << DB::qstr("benden");
+    dbabstract::Query q(*connection);
+    q << "INSERT INTO testing (text,fl) VALUES (" << dbabstract::qstr("benden");
     q << "," << 42.0f << ");";
     EXPECT_EQ(connection->execute(q.str()), true);
     unsigned long id = connection->insertId();
@@ -201,15 +201,15 @@ TEST_F(TransactionTest, RollbackTransaction) {
 }
 
 TEST_F(TransactionTest, QueryStringTypes) {
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
 
     q << "INSERT INTO test (text,fl,updatedOn) VALUES (";
-    q << DB::qstr("benden") << "," << 42l << "," << DB::unixtime(time(NULL)) << ");";
+    q << dbabstract::qstr("benden") << "," << 42l << "," << dbabstract::unixtime(time(NULL)) << ");";
     EXPECT_EQ(strlen(q.str()), 80);
 }
 
 TEST_F(TransactionTest, QueryStringTypes2) {
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
     std::stringstream world;
     world << " World" << std::ends;
 
@@ -219,7 +219,7 @@ TEST_F(TransactionTest, QueryStringTypes2) {
 }
 
 TEST_F(TransactionTest, QueryNumberTypes) {
-    DB::Query q(*connection);
+    dbabstract::Query q(*connection);
     double d = 42.2;
     short s = 42;
     unsigned short su = 42;

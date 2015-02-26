@@ -26,7 +26,7 @@
 
 #include "pq_db.h"
 
-namespace DB
+namespace dbabstract
 {
 
 PQ_ResultSet::~PQ_ResultSet()
@@ -236,7 +236,7 @@ PQ_Connection::execute(const char *sql)
     return (false);
 }
 
-DB::ResultSet *
+dbabstract::ResultSet *
 PQ_Connection::executeQuery(const char *sql)
 {
     if (!pgconn_) return (NULL);
@@ -245,8 +245,8 @@ PQ_Connection::executeQuery(const char *sql)
     if (PQresultStatus(res) == PGRES_COMMAND_OK) {
         return (0);
     }
-    DB::ResultSet *c = 0;
-    c = new DB::PQ_ResultSet(res);
+    dbabstract::ResultSet *c = 0;
+    c = new dbabstract::PQ_ResultSet(res);
     return (c);
 }
 
@@ -383,25 +383,25 @@ PQ_Connection::operator delete (void *ptr)
 
 #ifndef STATIC
 
-extern "C" LIBRARY_API DB::Connection *create_connection (void);
+extern "C" LIBRARY_API dbabstract::Connection *create_connection (void);
 
-DB::Connection *
+dbabstract::Connection *
 create_connection (void)
 {
-  DB::PQ_Connection *c = 0;
-  c = new DB::PQ_Connection;
+  dbabstract::PQ_Connection *c = 0;
+  c = new dbabstract::PQ_Connection;
   return (c);
 }
 
 #else
 
-extern "C" LIBRARY_API DB::Connection *create_pq_connection (void);
+extern "C" LIBRARY_API dbabstract::Connection *create_pq_connection (void);
 
-DB::Connection *
+dbabstract::Connection *
 create_pq_connection (void)
 {
-  DB::PQ_Connection *c = 0;
-  c = new DB::PQ_Connection;
+  dbabstract::PQ_Connection *c = 0;
+  c = new dbabstract::PQ_Connection;
   return (c);
 }
 

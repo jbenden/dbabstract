@@ -21,11 +21,11 @@
 #include <iomanip>
 #include <string>
 
-#include "db.h"
+#include "dbabstract/db.h"
 #include <pg_config.h>
 #include <libpq-fe.h>
 
-namespace DB
+namespace dbabstract
 {
     class PQ_Connection;
 

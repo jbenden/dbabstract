@@ -28,7 +28,7 @@
 
 #include "mysql/mysql.h"
 
-namespace DB
+namespace dbabstract
 {
 
 MySQL_ResultSet::~MySQL_ResultSet()
@@ -241,7 +241,7 @@ MySQL_Connection::execute(const char *sql)
     return (false);
 }
 
-DB::ResultSet *
+dbabstract::ResultSet *
 MySQL_Connection::executeQuery(const char *sql)
 {
     if (!mysql_) return (NULL);
@@ -253,8 +253,8 @@ MySQL_Connection::executeQuery(const char *sql)
     if (!res) {
         return (0);
     }
-    DB::ResultSet *c = 0;
-    c = new DB::MySQL_ResultSet(res);
+    dbabstract::ResultSet *c = 0;
+    c = new dbabstract::MySQL_ResultSet(res);
     return (c);
 }
 
@@ -385,11 +385,11 @@ MySQL_Connection::operator delete (void *ptr)
 
 extern "C" LIBRARY_API Connection *create_connection (void);
 
-DB::Connection *
+dbabstract::Connection *
 create_connection (void)
 {
-  DB::MySQL_Connection *c = 0;
-  c = new DB::MySQL_Connection;
+  dbabstract::MySQL_Connection *c = 0;
+  c = new dbabstract::MySQL_Connection;
   return (c);
 }
 
@@ -397,11 +397,11 @@ create_connection (void)
 
 extern "C" LIBRARY_API Connection *create_mysql_connection (void);
 
-DB::Connection *
+dbabstract::Connection *
 create_mysql_connection (void)
 {
-  DB::MySQL_Connection *c = 0;
-  c = new DB::MySQL_Connection;
+  dbabstract::MySQL_Connection *c = 0;
+  c = new dbabstract::MySQL_Connection;
   return (c);
 }
 

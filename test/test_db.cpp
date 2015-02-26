@@ -25,7 +25,7 @@
 #include <iostream>
 #include <string>
 
-using namespace DB;
+using namespace dbastract;
 
 typedef Connection* (*Connection_Creator) (void);
 

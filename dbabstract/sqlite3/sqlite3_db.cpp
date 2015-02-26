@@ -28,7 +28,7 @@
 
 #include "sqlite3.h"
 
-namespace DB
+namespace dbabstract
 {
 
 Sqlite3_ResultSet::~Sqlite3_ResultSet()
@@ -244,7 +244,7 @@ Sqlite3_Connection::execute(const char *sql)
     return (ret);
 }
 
-DB::ResultSet *
+dbabstract::ResultSet *
 Sqlite3_Connection::executeQuery(const char *sql)
 {
     sqlite3_stmt *vm = NULL;
@@ -256,8 +256,8 @@ Sqlite3_Connection::executeQuery(const char *sql)
         return (0);
     }
 
-    DB::ResultSet *c = 0;
-    c = new DB::Sqlite3_ResultSet(vm);
+    dbabstract::ResultSet *c = 0;
+    c = new dbabstract::Sqlite3_ResultSet(vm);
     return (c);
 }
 
@@ -373,22 +373,22 @@ Sqlite3_Connection::operator delete (void *ptr)
 #ifndef STATIC
 extern "C" LIBRARY_API Connection *create_connection (void);
 
-DB::Connection *
+dbabstract::Connection *
 create_connection (void)
 {
-  DB::Sqlite3_Connection *c = 0;
-  c = new DB::Sqlite3_Connection;
+  dbabstract::Sqlite3_Connection *c = 0;
+  c = new dbabstract::Sqlite3_Connection;
   return (c);
 }
 #else
 
 extern "C" LIBRARY_API Connection *create_sqlite3_connection (void);
 
-DB::Connection *
+dbabstract::Connection *
 create_sqlite3_connection (void)
 {
-  DB::Sqlite3_Connection *c = 0;
-  c = new DB::Sqlite3_Connection;
+  dbabstract::Sqlite3_Connection *c = 0;
+  c = new dbabstract::Sqlite3_Connection;
   return (c);
 }
 

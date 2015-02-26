@@ -34,7 +34,7 @@
 # define LIBRARY_API
 #endif
 
-namespace DB
+namespace dbabstract
 {
     /**
      * A ResultSet object is not updatable and has a cursor that
