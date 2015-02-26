@@ -14,7 +14,6 @@ SET(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake-modules")
 
 if (tests)
 add_subdirectory(gtest-1.7.0)
-endif()
 
 include(CodeCoverage)
 if (coverage)
@@ -22,6 +21,7 @@ if (coverage)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
     set(CMAkE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
     SETUP_TARGET_FOR_COVERAGE(coverage "${CMAKE_SOURCE_DIR}/test/tests" static coverage)
+endif()
 endif()
 
 add_subdirectory(dbabstract)
