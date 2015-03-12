@@ -135,9 +135,9 @@ TEST_F(TransactionTest, SingleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    dbabstract::Query q(*connection);
+    std::stringstream q;
     q << "SELECT * FROM testing;";
-    dbabstract::ResultSet *rs = connection->executeQuery(q.str());
+    dbabstract::ResultSet *rs = connection->executeQuery(q.str().c_str());
     EXPECT_NE(rs, (dbabstract::ResultSet *) NULL);
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
@@ -160,9 +160,9 @@ TEST_F(TransactionTest, DoubleSelect) {
     EXPECT_EQ(connection->execute("INSERT INTO testing (text,fl) VALUES ('benden',42)"), true);
     EXPECT_EQ(connection->commitTrans(), true);
 
-    dbabstract::Query q(*connection);
+    std::stringstream q;
     q << "SELECT * FROM testing;";
-    dbabstract::ResultSet *rs = connection->executeQuery(q.str());
+    dbabstract::ResultSet *rs = connection->executeQuery(q.str().c_str());
     EXPECT_NE(rs, (dbabstract::ResultSet *) NULL);
     rs->next();
     EXPECT_EQ(rs->findColumn("text"), 1);
@@ -186,10 +186,10 @@ TEST_F(TransactionTest, QueryString) {
     connection->setTransactionMode(dbabstract::Connection::REPEATABLE_READ);
     connection->setTransactionMode(dbabstract::Connection::SERIALIZABLE);
 
-    dbabstract::Query q(*connection);
-    q << "INSERT INTO testing (text,fl) VALUES (" << dbabstract::qstr("benden");
+    std::stringstream q;
+    q << "INSERT INTO testing (text,fl) VALUES (" << dbabstract::qstr(*connection, "benden");
     q << "," << 42.0f << ");";
-    EXPECT_EQ(connection->execute(q.str()), true);
+    EXPECT_EQ(connection->execute(q.str().c_str()), true);
     unsigned long id = connection->insertId();
     EXPECT_EQ(id, 1);
     EXPECT_EQ(connection->commitTrans(), true);
@@ -201,25 +201,25 @@ TEST_F(TransactionTest, RollbackTransaction) {
 }
 
 TEST_F(TransactionTest, QueryStringTypes) {
-    dbabstract::Query q(*connection);
+    std::stringstream q;
 
     q << "INSERT INTO test (text,fl,updatedOn) VALUES (";
-    q << dbabstract::qstr("benden") << "," << 42l << "," << dbabstract::unixtime(time(NULL)) << ");";
-    EXPECT_EQ(strlen(q.str()), 80);
+    q << dbabstract::qstr(*connection, "benden") << "," << 42l << "," << dbabstract::unixtime(*connection, time(NULL)) << ");";
+    EXPECT_EQ(strlen(q.str().c_str()), 80);
 }
 
 TEST_F(TransactionTest, QueryStringTypes2) {
-    dbabstract::Query q(*connection);
-    std::stringstream world;
-    world << " World" << std::ends;
+    std::stringstream q;
+    std::string world;
+    world = " World";
 
-    q << std::string("Hello") << world;
+    q << "Hello" << world;
 
-    EXPECT_EQ(strlen(q.str()), 11);
+    EXPECT_EQ(strlen(q.str().c_str()), 11);
 }
 
 TEST_F(TransactionTest, QueryNumberTypes) {
-    dbabstract::Query q(*connection);
+    std::stringstream q;
     double d = 42.2;
     short s = 42;
     unsigned short su = 42;

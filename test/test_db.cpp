@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace dbabstract;
 
@@ -68,8 +69,8 @@ main (int argc, const char * const argv[])
         std::cout << "OK: Connected to database." << std::endl;
 
         time_t now = time(NULL);
-        Query q((*connection));
-        q << "SELECT id, data FROM testing WHERE data=" << qstr("ben'den") << " and 1=1 and added=" << unixtime(now);
+        std::stringstream q;
+        q << "SELECT id, data FROM testing WHERE data=" << qstr(*connection, "ben'den") << " and 1=1 and added=" << unixtime(*connection, now);
         std::cout << "SQL = " << q.str() << std::endl;
 
         const char *s1 = "CREATE TABLE testing (id int unsigned not null auto_increment primary key, data varchar(255) not null, added datetime, cost decimal(10,2)) ENGINE=MyISAM";
@@ -158,8 +159,8 @@ main (int argc, const char * const argv[])
         std::cout << "OK: Connected to database." << std::endl;
 
         time_t now = time(NULL);
-        Query q((*connection));
-        q << "SELECT id, data FROM testing WHERE data=" << qstr("ben'den") << " and 1=1 and added=" << unixtime(now);
+        std::stringstream q;
+        q << "SELECT id, data FROM testing WHERE data=" << qstr(*connection, "ben'den") << " and 1=1 and added=" << unixtime(*connection, now);
         std::cout << "SQL = " << q.str() << std::endl;
 
         const char *s1 = "CREATE TABLE testing (id integer not null primary key autoincrement, data text not null, added integer, cost real)";
@@ -248,8 +249,8 @@ main (int argc, const char * const argv[])
         std::cout << "OK: Connected to database." << std::endl;
 
         time_t now = time(NULL);
-        Query q((*connection));
-        q << "SELECT id, data FROM testing WHERE data=" << qstr("ben'den") << " and 1=1 and added=" << unixtime(now);
+        std::stringstream q;
+        q << "SELECT id, data FROM testing WHERE data=" << qstr(*connection, "ben'den") << " and 1=1 and added=" << unixtime(*connection, now);
         std::cout << "SQL = " << q.str() << std::endl;
 
         const char *s1 = "CREATE TABLE testing (id serial, data text not null, added timestamp, cost real)";

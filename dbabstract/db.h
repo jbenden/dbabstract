@@ -293,127 +293,17 @@ namespace dbabstract
         long ref;
     };
 
-    /**
-     * The Query object allows for portable SQL query generation by
-     * allowing abstract usage of escaping and date manipulations in
-     * addition to easier SQL query generation by the user.  An
-     * example of usage is:
-     *
-     * Query q(connection);  // Connection is a pointer
-     *
-     * q << "SELECT fld FROM table WHERE fld=" << qstr("rand'data");
-     *
-     * std::cout << "SQL: " << q.str() << std::endl;
-     */
-    class Query
+    inline std::ostream &unixtime_impl(std::ostream &Out, Connection& conn_, const time_t ut)
     {
-    private:
-        Connection &conn_;      /** Internal connection object reference */
-        std::stringstream sql_;   /** Buffer used to store the SQL query */
-
-    public:
-        Query(Connection &conn) : conn_(conn) {}
-        ~Query() {}
-
-        inline Query& operator<<(const char *sql)
-        {
-            sql_ << sql;
-            return (*this);
-        }
-
-        inline Query& operator<<(const std::string &sql)
-        {
-            sql_ << sql;
-            return (*this);
-        }
-
-        inline Query& operator<<(const std::stringstream &val)
-        {
-            sql_ << val.str();
-            return (*this);
-        }
-
-        inline Query& operator<<(const int val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const long val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const double val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const float val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const short val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const unsigned char *sql)
-        {
-            sql_ << sql;
-            return (*this);
-        }
-
-        inline Query& operator<<(const unsigned int val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const unsigned long val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        inline Query& operator<<(const unsigned short val)
-        {
-            sql_ << val;
-            return (*this);
-        }
-
-        /**
-         * Get the SQL statement string
-         *
-         * @return const char*
-         */
-        inline const char *str(void)
-        {
-            sql_ << std::ends;
-            return (sql_.str().c_str());
-        }
-
-        // Friend functions for stream manipulators
-        friend Query &unixtime_impl(Query &Out, const time_t ut);
-        friend Query &qstr_impl(Query &Out, const char *str);
-    };
-
-    inline Query &unixtime_impl(Query &Out, const time_t ut)
-    {
-        const char *buf = Out.conn_.unixtimeToSql(ut);
+        const char *buf = conn_.unixtimeToSql(ut);
         Out << buf;
         delete [] buf;
         return (Out);
     }
 
-    inline Query &qstr_impl(Query &Out, const char *str)
+    inline std::ostream &qstr_impl(std::ostream &Out, Connection& conn_, const char *str)
     {
-        const char *buf = Out.conn_.escape(str);
+        const char *buf = conn_.escape(str);
         Out << buf;
         delete [] buf;
         return (Out);
@@ -428,10 +318,11 @@ namespace dbabstract
      */
     class unixtime {
         time_t t;
+        Connection& conn;
     public:
-        unixtime(time_t ti) : t(ti) {}
-        friend Query& operator<<(Query& Out, const unixtime& ref) {
-            return unixtime_impl(Out, ref.t);
+        unixtime(Connection& con, time_t ti) : t(ti), conn(con) {}
+        friend std::ostream& operator<<(std::ostream& Out,  const unixtime& ref) {
+            return unixtime_impl(Out, ref.conn, ref.t);
         }
     };
 
@@ -444,10 +335,12 @@ namespace dbabstract
      */
     class qstr {
         std::string s;
+        Connection& conn;
     public:
-        qstr(const char *str) : s(str) {}
-        friend Query& operator<<(Query& Out, const qstr& q) {
-                return qstr_impl(Out, q.s.c_str());
+        qstr(Connection& con, const char *str) : s(str), conn(con) {}
+        qstr(Connection& con, const std::string& str) : s(str), conn(con) {}
+        friend std::ostream& operator<<(std::ostream& Out, const qstr& q) {
+                return qstr_impl(Out, q.conn, q.s.c_str());
         }
     };
 }; /* namespace */
