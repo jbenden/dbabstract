@@ -36,6 +36,7 @@ extern "C" {
 extern Connection * create_mysql_connection(void);
 extern Connection * create_sqlite3_connection(void);
 extern Connection * create_pq_connection(void);
+extern Connection * create_odbc_connection(void);
 }
 
 int
@@ -313,6 +314,95 @@ main (int argc, const char * const argv[])
     } else {
         result = 1;
         std::cout << "FAILED: Could not connect to PostgreSQL database." << std::endl;
+    }
+  }
+
+#endif
+
+#ifdef ENABLE_ODBC
+
+  {
+      Poco::AutoPtr <Connection> connection;
+   if (!enable_static) {
+      std::string path(LIBPATH "/libodbc_dba");
+#ifndef __APPLE__
+      path.append(Poco::SharedLibrary::suffix());
+#else
+      path.append(".so");
+#endif
+      connection = Connection::factory(path.c_str());
+    } else {
+        connection = create_odbc_connection();
+    }
+    std::cout << "OK: Reported version: " << connection->version () << std::endl;
+
+    if (connection->open("DSN=test_db", "", 0, "", "")) {
+        std::cout << "OK: Connected to database." << std::endl;
+
+        time_t now = time(NULL);
+        std::stringstream q;
+        q << "SELECT id, data FROM testing WHERE data=" << qstr(*connection, "ben'den") << " and 1=1 and added=" << unixtime(*connection, now);
+        std::cout << "SQL = " << q.str() << std::endl;
+
+        const char *s1 = "CREATE TABLE testing (id int unsigned not null auto_increment primary key, data varchar(255) not null, added datetime, cost decimal(10,2)) ENGINE=MyISAM";
+        if (connection->execute(s1)) {
+            std::cout << "OK: Created table testing" << std::endl;
+
+            ResultSet *rs3 = connection->executeQuery("SELECT id, data FROM testing");
+            if (rs3) {
+                while (rs3->next()) {
+                    std::cout << "READ: id=" << rs3->getInteger(0) << " data=" << rs3->getString(1) << std::endl;
+                }
+                rs3->close();
+            }
+            std::cout << "OK: Read nothing from table" << std::endl;
+
+            const char *s2 = "INSERT INTO testing SET data='joe', added=now(), cost=1.99";
+            if (!connection->execute(s2)) {
+                result = 1;
+                std::cout << "FAILED: Insert 1 failed" << std::endl;
+            }
+
+            ResultSet *rs = connection->executeQuery("SELECT id, data, added, cost FROM testing");
+            if (rs) {
+                while (rs->next()) {
+                    std::cout << "READ: id=" << rs->getInteger(0) << " data=" << rs->getString(1) << " added=" << rs->getUnixTime(2) << " cost=" << rs->getDouble(3) << std::endl;
+                    time_t added = rs->getUnixTime(2);
+                    std::cout << "READ: added formatted time: " << ctime(&added) << std::endl;
+                }
+                rs->close();
+            }
+            std::cout << "OK: Single record" << std::endl;
+
+            const char *s3 = "INSERT INTO testing SET data='benden'";
+            if (!connection->execute(s3)) {
+                result = 1;
+                std::cout << "FAILED: Insert 2 failed" << std::endl;
+            }
+
+            ResultSet *rs1 = connection->executeQuery("SELECT id, data FROM testing");
+            if (rs1) {
+                while (rs1->next()) {
+                    std::cout << "READ: id=" << rs1->getInteger(0) << " data=" << rs1->getString(1) << std::endl;
+                }
+                rs1->close();
+            }
+            std::cout << "OK: Two records" << std::endl;
+
+            const char *e1 = "DROP TABLE testing";
+            if (connection->execute(e1)) {
+                std::cout << "OK: Dropped table testing" << std::endl;
+            } else {
+                result = 1;
+                std::cout << "FAILED: Could not drop table testing" << std::endl;
+            }
+        } else {
+            result = 1;
+            std::cout << "FAILED: Creating table testing" << std::endl;
+        }
+    } else {
+        result = 1;
+        std::cout << "FAILED: Could not connect to database." << std::endl;
     }
   }
 
