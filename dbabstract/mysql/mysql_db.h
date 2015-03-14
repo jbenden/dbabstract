@@ -19,6 +19,8 @@
  */
 #include <fstream>
 #include <iomanip>
+#include <vector>
+#include <string>
 
 #include "dbabstract/db.h"
 #include "mysql/mysql.h"
@@ -39,6 +41,8 @@ namespace dbabstract
         const MySQL_ResultSet &operator=(const MySQL_ResultSet &old);
 
     public:
+        void *handle(void) { return res_; }
+
         bool close(void);
         bool next(void);
 
@@ -75,6 +79,7 @@ namespace dbabstract
         MySQL_Connection() : mysql_(NULL) {};
         ~MySQL_Connection() { close(); }
 
+        void * handle(void) { return mysql_; }
         bool open(const char *database, const char *host, const int port, const char *user, const char *pass);
         bool close(void);
         bool isConnected(void);
@@ -93,6 +98,8 @@ namespace dbabstract
         const char *errormsg(void) const;
 
         const char *version(void) const;
+
+        std::vector<std::string> tables(void) const;
 
         // Overload the new/delete opertors so the object will be
         // created/deleted using the memory allocator associated with the

@@ -20,6 +20,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <vector>
 
 #include "dbabstract/db.h"
 #include <pg_config.h>
@@ -41,6 +42,8 @@ class PQ_ResultSet : public ResultSet
         const PQ_ResultSet &operator=(const PQ_ResultSet &old);
 
     public:
+        void * handle(void) { return res_; }
+
         bool close(void);
         bool next(void);
 
@@ -77,6 +80,7 @@ class PQ_ResultSet : public ResultSet
         PQ_Connection() : pgconn_(NULL) {};
         ~PQ_Connection() { close(); }
 
+        void * handle(void) { return pgconn_; }
         bool open(const char *database, const char *host, const int port, const char *user, const char *pass);
         bool close(void);
         bool isConnected(void);
@@ -95,6 +99,8 @@ class PQ_ResultSet : public ResultSet
         const char *errormsg(void) const;
 
         const char *version(void) const;
+
+        std::vector<std::string> tables(void) const;
 
         // Overload the new/delete opertors so the object will be
         // created/deleted using the memory allocator associated with the

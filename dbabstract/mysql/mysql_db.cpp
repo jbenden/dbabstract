@@ -364,6 +364,23 @@ MySQL_Connection::version(void) const
     return ((const char *) ret);
 }
 
+std::vector<std::string>
+MySQL_Connection::tables(void) const
+{
+    std::vector<std::string> vTables;
+
+    MYSQL_RES *res = mysql_list_tables(mysql_, NULL);
+    MySQL_ResultSet *rs = new MySQL_ResultSet(res);
+    if (rs) {
+        while (rs->next()) {
+            vTables.push_back(rs->getString(0));
+        }
+        rs->close();
+    }
+
+    return vTables;
+}
+
 void *
 MySQL_Connection::operator new (size_t bytes)
 {

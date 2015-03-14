@@ -19,6 +19,8 @@
  */
 #include <fstream>
 #include <iomanip>
+#include <string>
+#include <vector>
 
 #include "dbabstract/db.h"
 #include "sql.h"
@@ -42,6 +44,8 @@ namespace dbabstract
         const ODBC_ResultSet &operator=(const ODBC_ResultSet &old);
 
     public:
+        void *handle(void) { return hstmt; }
+
         bool close(void);
         bool next(void);
 
@@ -82,6 +86,8 @@ namespace dbabstract
             , connected(0) {}
         ~ODBC_Connection() { close(); }
 
+        void *handle(void) { return hstmt; }
+        std::vector<std::string> tables(void) const;
         bool open(const char *database, const char *host, const int port, const char *user, const char *pass);
         bool close(void);
         bool isConnected(void);

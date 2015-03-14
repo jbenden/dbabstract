@@ -1,15 +1,15 @@
 cmake_minimum_required (VERSION 2.8.7)
 
-option(test "Build all tests." ON)
-option(docs "Build all docs." ON)
+option(test "Build all tests." OFF)
+option(docs "Build all docs." OFF)
 option(coverage "Build with coverage support." OFF)
 
 #cmake_policy(SET CMP0042 NEW)
 
 project (dbabstract)
-set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/gtest-1.7.0")
+set(GTEST_ROOT "${dbabstract_SOURCE_DIR}/gtest-1.7.0")
 set(CMAKE_CXX_FLAGS "-g -Wall -I${dbabstract_SOURCE_DIR}")
-set(ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs")
+set(ARCHIVE_OUTPUT_DIRECTORY "${dbabstract_SOURCE_DIR}/libs")
 SET(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake-modules")
 
 if (test)

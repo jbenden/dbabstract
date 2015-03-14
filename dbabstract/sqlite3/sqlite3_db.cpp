@@ -23,6 +23,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <vector>
 
 #include "sqlite3_db.h"
 
@@ -343,6 +345,22 @@ const char *
 Sqlite3_Connection::errormsg(void) const
 {
     return (sqlite3_errmsg(db_));
+}
+
+std::vector<std::string>
+Sqlite3_Connection::tables(void) const
+{
+    std::vector<std::string> vTables;
+    std::stringstream ss;
+    ss << "SELECT * FROM sqlite_master WHERE type='table'";
+    ResultSet *rs = ((Connection*)this)->executeQuery(ss.str().c_str());
+    if (rs) {
+        while (rs->next()) {
+            vTables.push_back(rs->getString(2));
+        }
+        rs->close();
+    }
+    return vTables;
 }
 
 const char *

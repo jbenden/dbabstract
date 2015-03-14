@@ -752,6 +752,29 @@ ODBC_Connection::version(void) const
     return ((const char *) ret);
 }
 
+std::vector<std::string>
+ODBC_Connection::tables(void) const
+{
+    std::vector<std::string> vTables;
+
+    if (SQLTables (hstmt, NULL, 0, NULL, 0, NULL, 0,
+                NULL, 0) != SQL_SUCCESS) {
+        std::cerr << "SQLTables() failed." << std::endl;
+    }
+    int retCode;
+    SQLTCHAR fetchBuffer[1024];
+    SQLLEN colIndicator;
+
+    for (retCode = SQLFetch(hstmt); retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO; retCode = SQLFetch(hstmt)) {
+        retCode = SQLGetData (hstmt, 1, SQL_C_CHAR, fetchBuffer, NUMTCHAR (fetchBuffer), &colIndicator);
+        if (retCode != SQL_SUCCESS_WITH_INFO && retCode != SQL_SUCCESS) {
+            std::cerr << "SQLGetData() failed." << std::endl;
+        }
+        vTables.push_back((char *) fetchBuffer);
+    }
+    return vTables;
+}
+
 void *
 ODBC_Connection::operator new (size_t bytes)
 {

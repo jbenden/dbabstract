@@ -23,6 +23,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <vector>
 
 #include "pq_db.h"
 
@@ -362,6 +364,24 @@ PQ_Connection::version(void) const
     static char ret[256];
     snprintf(ret, 256, "PostgreSQL Driver v0.1");
     return ((const char *) ret);
+}
+
+std::vector<std::string>
+PQ_Connection::tables(void) const
+{
+    std::vector<std::string> vTables;
+
+    std::stringstream q;
+    q << "SELECT * from pg_tables";
+    ResultSet* rs = ((Connection *)this)->executeQuery(q.str().c_str());
+    if (rs) {
+        while (rs->next()) {
+            vTables.push_back(rs->getString(rs->findColumn("tablename")));
+        }
+        rs->close();
+    }
+
+    return vTables;
 }
 
 void *

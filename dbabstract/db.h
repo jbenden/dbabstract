@@ -25,6 +25,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include <Poco/SharedLibrary.h>
 
@@ -62,6 +63,8 @@ namespace dbabstract
     public:
         virtual ~ResultSet(void) {};
 
+        virtual void *handle(void) = 0;
+
         virtual bool close(void) = 0;
         virtual bool next(void) = 0;
 
@@ -97,6 +100,13 @@ namespace dbabstract
     public:
         Connection(void) : ref(1) {};
         virtual ~Connection(void) {};
+
+        /**
+         * Enumerates all available tables in the connected database.
+         */
+        virtual std::vector<std::string> tables(void) const = 0;
+
+        virtual void * handle(void) = 0;
 
         /**
          * Open a connection to a database.

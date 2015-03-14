@@ -11,6 +11,7 @@ IF (SQLITE_INCLUDE_DIR)
 ENDIF (SQLITE_INCLUDE_DIR)
 
 FIND_PATH(SQLITE_INCLUDE_DIR sqlite3.h
+  /usr/local/opt/sqlite/include
   /usr/local/include/sqlite3
   /usr/include/sqlite3
   /usr/include
@@ -19,9 +20,16 @@ FIND_PATH(SQLITE_INCLUDE_DIR sqlite3.h
 SET(SQLITE_NAMES sqlite3)
 FIND_LIBRARY(SQLITE_LIBRARY
     NAMES ${SQLITE_NAMES}
-  PATHS /usr/lib /usr/local/lib
-  PATH_SUFFIXES sqlite3
+    PATHS /usr/local/opt/sqlite/lib
+    NO_DEFAULT_PATH)
+message("SQLITE_LIBRARY: ${SQLITE_LIBRARY}")
+
+if (NOT SQLITE_LIBRARY)
+FIND_LIBRARY(SQLITE_LIBRARY
+    NAMES ${SQLITE_NAMES}
+  PATHS /usr/local/opt/sqlite/lib /usr/lib /usr/local/lib
 )
+endif()
 
 IF (SQLITE_INCLUDE_DIR AND SQLITE_LIBRARY)
     SET(SQLITE_FOUND TRUE CACHE INTERNAL "SQLite3 Found")

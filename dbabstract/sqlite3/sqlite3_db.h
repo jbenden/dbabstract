@@ -20,6 +20,8 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <vector>
+#include <string>
 
 #include "dbabstract/db.h"
 
@@ -41,6 +43,7 @@ namespace dbabstract
         const Sqlite3_ResultSet &operator=(const Sqlite3_ResultSet &old);
 
     public:
+        void *handle(void) { return res_; }
         bool close(void);
         bool next(void);
 
@@ -76,6 +79,7 @@ namespace dbabstract
         Sqlite3_Connection() : db_(NULL) {};
         ~Sqlite3_Connection() { close(); }
 
+        void * handle(void) { return db_; }
         bool open(const char *database, const char *host, const int port, const char *user, const char *pass);
         bool close(void);
         bool isConnected(void);
@@ -94,6 +98,8 @@ namespace dbabstract
         const char *errormsg(void) const;
 
         const char *version(void) const;
+
+        std::vector<std::string> tables(void) const;
 
         // Overload the new/delete opertors so the object will be
         // created/deleted using the memory allocator associated with the
