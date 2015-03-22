@@ -98,7 +98,7 @@ bool
 PQ_ResultSet::getBool(const int idx) const
 {
     const char *res = getString(idx);
-    if (res && res[0] == '1') {
+    if (res && (res[0] == '1' || res[0] == 't')) {
         return (true);
     }
     return (false);
