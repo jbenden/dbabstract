@@ -104,7 +104,7 @@ MySQL_ResultSet::getInteger(const int idx) const
 bool
 MySQL_ResultSet::getBool(const int idx) const
 {
-    if (row_[idx] && row_[idx][0] == '1') {
+    if (row_[idx] && (row_[idx][0] == '1' || row_[idx][0] == 't')) {
         return (true);
     }
     return (false);

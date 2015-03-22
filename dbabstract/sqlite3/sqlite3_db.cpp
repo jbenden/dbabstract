@@ -113,7 +113,7 @@ bool
 Sqlite3_ResultSet::getBool(const int idx) const
 {
     register const char *v = (const char *) sqlite3_column_text(res_, idx);
-    if (v && v[0] == '1') {
+    if (v && (v[0] == '1' || v[0] == 't')) {
         return (true);
     }
     return (false);
