@@ -1,5 +1,3 @@
-#include <Poco/AutoPtr.h>
-
 #include <gtest/gtest.h>
 #include <exception>
 #include <iostream>
@@ -26,7 +24,7 @@ class ODBCDefaultTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(ODBCDefaultTest, CanConnectToDatabase) {
@@ -83,7 +81,7 @@ class ODBCTransactionTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(ODBCTransactionTest, SingleInsert) {

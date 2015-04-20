@@ -26,8 +26,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
-
-#include <Poco/SharedLibrary.h>
+#include <dlfcn.h>
 
 #if defined(_WIN32)
 # define LIBRARY_API __declspec(dllexport)
@@ -270,20 +269,28 @@ namespace dbabstract
         static Connection *
         factory(const char *db_dll_name)
         {
-            Poco::SharedLibrary dll(db_dll_name);
+            void *handle_ = dlopen(db_dll_name, 0);
+            if (!handle_) {
+                std::cerr << "Cannot load shared library." << std::endl;
+                throw new std::exception;
+            }
 
             Connection_Creator cc;
             try {
-                void *void_ptr = dll.getSymbol("create_connection");
+                void *void_ptr = dlsym(handle_, "create_connection");
                 cc = reinterpret_cast<Connection_Creator>(void_ptr);
                 if (!cc) {
                     std::cerr << "Shared Library contains the symbol interface for db-abstract, but returned NULL for some reason." << std::endl;
                     return (NULL);
                 }
                 return (cc());
-            } catch (Poco::NotFoundException &ex) {
+            } catch (std::exception &ex) {
                 std::cerr << "Shared Library does not contain the appropriate interface for db-abstract." << std::endl;
                 return (NULL);
+            }
+            if (handle_) {
+                dlclose(handle_);
+                handle_ = 0;
             }
         }
 

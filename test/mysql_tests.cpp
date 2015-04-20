@@ -1,5 +1,3 @@
-#include <Poco/AutoPtr.h>
-
 #include <gtest/gtest.h>
 #include <exception>
 #include <iostream>
@@ -25,7 +23,7 @@ class InvalidTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(InvalidTest, CannotConnectToDatabase) {
@@ -43,7 +41,7 @@ class Invalid2Test : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(Invalid2Test, CannotConnectToDatabase) {
@@ -67,7 +65,7 @@ class DefaultTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(DefaultTest, CanConnectToDatabase) {
@@ -123,7 +121,7 @@ class TransactionTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(TransactionTest, SingleInsert) {

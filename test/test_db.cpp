@@ -19,12 +19,10 @@
  */
 #include "dbabstract/db.h"
 
-#include <Poco/SharedLibrary.h>
-#include <Poco/AutoPtr.h>
-
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <memory>
 
 using namespace dbabstract;
 
@@ -52,11 +50,11 @@ main (int argc, const char * const argv[])
 #ifdef ENABLE_MYSQL
 
   {
-      Poco::AutoPtr <Connection> connection;
+      Connection * connection;
    if (!enable_static) {
       std::string path(LIBPATH "/libmysql_dba");
 #ifndef __APPLE__
-      path.append(Poco::SharedLibrary::suffix());
+      path.append(".dylib");
 #else
       path.append(".so");
 #endif
@@ -143,11 +141,11 @@ main (int argc, const char * const argv[])
   {
       std::string path(LIBPATH "/libsqlite3_dba");
 #ifndef __APPLE__
-      path.append(Poco::SharedLibrary::suffix());
+      path.append(".dylib");
 #else
       path.append(".so");
 #endif
-      Poco::AutoPtr <Connection> connection;
+      Connection * connection;
       if (!enable_static) {
           connection = Connection::factory(path.c_str());
       } else {
@@ -232,11 +230,11 @@ main (int argc, const char * const argv[])
   {
       std::string path(LIBPATH "/libpq_dba");
 #ifndef __APPLE__
-      path.append(Poco::SharedLibrary::suffix());
+      path.append(".dylib");
 #else
       path.append(".so");
 #endif
-      Poco::AutoPtr <Connection> connection;
+      Connection * connection;
      
       if (!enable_static) {
           connection = Connection::factory(path.c_str());
@@ -322,11 +320,11 @@ main (int argc, const char * const argv[])
 #ifdef ENABLE_ODBC
 
   {
-      Poco::AutoPtr <Connection> connection;
+      Connection * connection;
    if (!enable_static) {
       std::string path(LIBPATH "/libodbc_dba");
 #ifndef __APPLE__
-      path.append(Poco::SharedLibrary::suffix());
+      path.append(".dylib");
 #else
       path.append(".so");
 #endif

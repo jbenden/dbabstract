@@ -1,5 +1,3 @@
-#include <Poco/AutoPtr.h>
-
 #include <gtest/gtest.h>
 #include <exception>
 #include <iostream>
@@ -25,7 +23,7 @@ class SqliteInvalidTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(SqliteInvalidTest, CannotConnectToDatabase) {
@@ -43,7 +41,7 @@ class SqliteDefaultTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(SqliteDefaultTest, CanConnectToDatabase) {
@@ -98,7 +96,7 @@ class SqliteTransactionTest : public ::testing::Test {
             connection->release();
         }
 
-        Poco::AutoPtr <dbabstract::Connection> connection;
+        dbabstract::Connection * connection;
 };
 
 TEST_F(SqliteTransactionTest, SingleInsert) {
